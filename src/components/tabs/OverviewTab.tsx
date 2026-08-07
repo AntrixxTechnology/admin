@@ -2,14 +2,20 @@ import React from 'react';
 import { BarChart3, MessageSquare, Users } from 'lucide-react';
 
 interface OverviewTabProps {
+  solutionCount: number;
+  clientCount: number;
   inquiryCount: number;
   applicationCount: number;
+  systemStatus?: any;
   onNavigate: (tab: any) => void;
 }
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({
+  solutionCount,
+  clientCount,
   inquiryCount,
   applicationCount,
+  systemStatus,
   onNavigate,
 }) => {
   return (
@@ -19,14 +25,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           label="Total Services"
-          value="12"
-          sub="100% Seeded from PDF"
+          value={solutionCount.toString()}
+          sub="Live From Supabase"
           subColor="text-amberAccent"
         />
         <StatCard
           label="Enterprise Clients"
-          value="10"
-          sub="ITC, Coca-Cola, Haldiram..."
+          value={clientCount.toString()}
+          sub="Trusted global partners"
           subColor="text-emerald-600"
         />
         <div className="p-6 rounded-2xl bg-white border border-gray200 shadow-cardLight space-y-2">
@@ -67,19 +73,19 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-sans">
           <StatusCard
             label="API Repository"
-            value="LocalJsonRepository"
-            note="Swappable to Supabase PostgreSQL"
+            value={systemStatus?.repository || 'Loading...'}
+            note={systemStatus?.repository === 'SupabaseRepository' ? 'Live Cloud Database Active' : 'Swappable to Supabase PostgreSQL'}
           />
           <StatusCard
             label="Storage Provider"
-            value="LocalDiskStorageProvider"
-            note="Swappable to Supabase Storage"
+            value={systemStatus?.storage || 'Loading...'}
+            note={systemStatus?.storage === 'SupabaseStorageProvider' ? 'Cloud Object Storage Active' : 'Swappable to Supabase Storage'}
           />
           <StatusCard
             label="API Port"
-            value="http://localhost:5000 (Active)"
+            value={systemStatus ? `http://localhost:${systemStatus.port} (Active)` : 'Loading...'}
             valueColor="text-emerald-600"
-            note="Zod Validation & Nodemailer Live"
+            note={systemStatus ? `Uptime: ${systemStatus.uptime_seconds}s` : ''}
           />
         </div>
       </div>

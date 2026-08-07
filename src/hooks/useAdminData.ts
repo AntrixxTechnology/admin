@@ -45,6 +45,7 @@ export interface AdminDataState {
   setResources: React.Dispatch<React.SetStateAction<ResourcePost[]>>;
   setFaqs: React.Dispatch<React.SetStateAction<FaqItem[]>>;
   setJobOpenings: React.Dispatch<React.SetStateAction<JobOpening[]>>;
+  systemStatus: any | null;
 }
 
 export function useAdminData(token: string | null, onUnauthorized: () => void): AdminDataState {
@@ -63,6 +64,7 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
   
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
+  const [systemStatus, setSystemStatus] = useState<any | null>(null);
 
   const fetchAdminData = useCallback(async () => {
     if (!token) return;
@@ -71,7 +73,7 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
         heroData, aboutData, settingsData, statsData, 
         solutionsData, industriesData, projectsData, clientLogosData,
         teamData, resourcesData, faqsData, jobOpeningsData,
-        inqData, appData
+        inqData, appData, statusData
       ] = await Promise.all([
         apiFetch<HeroContent>('/admin/hero', token),
         apiFetch<AboutContent>('/admin/about', token),
@@ -86,7 +88,8 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
         apiFetch<FaqItem[]>('/admin/faqs', token),
         apiFetch<JobOpening[]>('/admin/job-openings', token),
         apiFetch<any[]>('/admin/inquiries', token),
-        apiFetch<any[]>('/admin/applications', token)
+        apiFetch<any[]>('/admin/applications', token),
+        apiFetch<any>('/status', token).catch(() => null) // public route, ignore auth error
       ]);
 
       if (heroData) setHero(heroData);
@@ -106,6 +109,7 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
       else onUnauthorized(); // If one protected route fails due to auth, assume token is dead
 
       if (appData) setApplications(appData);
+      if (statusData) setSystemStatus(statusData);
     } catch (err) {
       console.error('[Admin] Error loading full CMS data:', err);
     }
@@ -113,7 +117,7 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
 
   return {
     hero, about, settings, stats, solutions, industries, projects, clientLogos,
-    team, resources, faqs, jobOpenings, inquiries, applications,
+    team, resources, faqs, jobOpenings, inquiries, applications, systemStatus,
     fetchAdminData,
     setHero, setAbout, setSettings, setStats, setSolutions, setIndustries,
     setProjects, setClientLogos, setTeam, setResources, setFaqs, setJobOpenings

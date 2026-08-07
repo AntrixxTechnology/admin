@@ -204,7 +204,7 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'overview' && <OverviewTab inquiryCount={data.inquiries.length} applicationCount={data.applications.length} onNavigate={setActiveTab} />}
+        {activeTab === 'overview' && <OverviewTab solutionCount={data.solutions.length + data.industries.length} clientCount={data.clientLogos.length} inquiryCount={data.inquiries.length} applicationCount={data.applications.length} systemStatus={data.systemStatus} onNavigate={setActiveTab} />}
         
         {activeTab === 'core' && (
           <CoreContentTab 
