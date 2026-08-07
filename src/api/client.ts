@@ -153,7 +153,7 @@ export interface JobOpening {
 
 // ─── Base Fetcher ─────────────────────────────────────────────────────────────
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 async function fetchJson<T>(endpoint: string, fallback: T): Promise<T> {
   try {
