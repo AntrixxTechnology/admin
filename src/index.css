@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-offWhite text-inkBlack;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray200;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray500 rounded-full;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-md bg-amberAccent hover:bg-amberAccentDark text-white font-display font-bold text-xs uppercase tracking-wider shadow-amberGlow transition-colors flex items-center gap-2;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2 rounded-md bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold flex items-center gap-1.5 transition-colors;
+  }
+
+  .btn-ghost {
+    @apply px-3 py-2 rounded-md bg-offWhite hover:bg-gray200 border border-gray200 text-xs font-bold flex items-center gap-1.5;
+  }
+
+  .input-base {
+    @apply w-full p-2.5 rounded-md bg-offWhite border border-gray200 text-inkBlack focus:outline-none focus:border-amberAccent text-xs;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl border border-gray200 shadow-cardLight;
+  }
+
+  .tab-btn {
+    @apply py-3 px-4 text-xs font-display font-bold uppercase tracking-wider border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap;
+  }
+
+  .tab-btn-active {
+    @apply border-amberAccent text-amberAccent;
+  }
+
+  .tab-btn-inactive {
+    @apply border-transparent text-gray-600 hover:text-inkBlack;
+  }
+}

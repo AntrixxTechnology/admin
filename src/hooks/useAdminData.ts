@@ -1,0 +1,121 @@
+import { useState, useCallback } from 'react';
+import {
+  fetchAdminData as apiFetch,
+  type SolutionItem,
+  type HeroContent,
+  type AboutContent,
+  type SiteSettings,
+  type StatItem,
+  type IndustryItem,
+  type ProjectItem,
+  type ClientLogoItem,
+  type TeamMember,
+  type ResourcePost,
+  type FaqItem,
+  type JobOpening,
+} from '../api/client';
+
+export interface AdminDataState {
+  hero: HeroContent | null;
+  about: AboutContent | null;
+  settings: SiteSettings | null;
+  stats: StatItem[];
+  solutions: SolutionItem[];
+  industries: IndustryItem[];
+  projects: ProjectItem[];
+  clientLogos: ClientLogoItem[];
+  team: TeamMember[];
+  resources: ResourcePost[];
+  faqs: FaqItem[];
+  jobOpenings: JobOpening[];
+  inquiries: any[];
+  applications: any[];
+  fetchAdminData: () => Promise<void>;
+  
+  // Expose setter for optimistic updates or single item updates
+  setHero: React.Dispatch<React.SetStateAction<HeroContent | null>>;
+  setAbout: React.Dispatch<React.SetStateAction<AboutContent | null>>;
+  setSettings: React.Dispatch<React.SetStateAction<SiteSettings | null>>;
+  setStats: React.Dispatch<React.SetStateAction<StatItem[]>>;
+  setSolutions: React.Dispatch<React.SetStateAction<SolutionItem[]>>;
+  setIndustries: React.Dispatch<React.SetStateAction<IndustryItem[]>>;
+  setProjects: React.Dispatch<React.SetStateAction<ProjectItem[]>>;
+  setClientLogos: React.Dispatch<React.SetStateAction<ClientLogoItem[]>>;
+  setTeam: React.Dispatch<React.SetStateAction<TeamMember[]>>;
+  setResources: React.Dispatch<React.SetStateAction<ResourcePost[]>>;
+  setFaqs: React.Dispatch<React.SetStateAction<FaqItem[]>>;
+  setJobOpenings: React.Dispatch<React.SetStateAction<JobOpening[]>>;
+}
+
+export function useAdminData(token: string | null, onUnauthorized: () => void): AdminDataState {
+  const [hero, setHero] = useState<HeroContent | null>(null);
+  const [about, setAbout] = useState<AboutContent | null>(null);
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const [stats, setStats] = useState<StatItem[]>([]);
+  const [solutions, setSolutions] = useState<SolutionItem[]>([]);
+  const [industries, setIndustries] = useState<IndustryItem[]>([]);
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [clientLogos, setClientLogos] = useState<ClientLogoItem[]>([]);
+  const [team, setTeam] = useState<TeamMember[]>([]);
+  const [resources, setResources] = useState<ResourcePost[]>([]);
+  const [faqs, setFaqs] = useState<FaqItem[]>([]);
+  const [jobOpenings, setJobOpenings] = useState<JobOpening[]>([]);
+  
+  const [inquiries, setInquiries] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
+
+  const fetchAdminData = useCallback(async () => {
+    if (!token) return;
+    try {
+      const [
+        heroData, aboutData, settingsData, statsData, 
+        solutionsData, industriesData, projectsData, clientLogosData,
+        teamData, resourcesData, faqsData, jobOpeningsData,
+        inqData, appData
+      ] = await Promise.all([
+        apiFetch<HeroContent>('/admin/hero', token),
+        apiFetch<AboutContent>('/admin/about', token),
+        apiFetch<SiteSettings>('/admin/settings', token),
+        apiFetch<StatItem[]>('/admin/stats', token),
+        apiFetch<SolutionItem[]>('/solutions', token), // public route
+        apiFetch<IndustryItem[]>('/admin/industries', token),
+        apiFetch<ProjectItem[]>('/admin/projects', token),
+        apiFetch<ClientLogoItem[]>('/admin/client-logos', token),
+        apiFetch<TeamMember[]>('/admin/team', token),
+        apiFetch<ResourcePost[]>('/admin/resources', token),
+        apiFetch<FaqItem[]>('/admin/faqs', token),
+        apiFetch<JobOpening[]>('/admin/job-openings', token),
+        apiFetch<any[]>('/admin/inquiries', token),
+        apiFetch<any[]>('/admin/applications', token)
+      ]);
+
+      if (heroData) setHero(heroData);
+      if (aboutData) setAbout(aboutData);
+      if (settingsData) setSettings(settingsData);
+      if (statsData) setStats(statsData);
+      if (solutionsData) setSolutions(solutionsData);
+      if (industriesData) setIndustries(industriesData);
+      if (projectsData) setProjects(projectsData);
+      if (clientLogosData) setClientLogos(clientLogosData);
+      if (teamData) setTeam(teamData);
+      if (resourcesData) setResources(resourcesData);
+      if (faqsData) setFaqs(faqsData);
+      if (jobOpeningsData) setJobOpenings(jobOpeningsData);
+      
+      if (inqData) setInquiries(inqData);
+      else onUnauthorized(); // If one protected route fails due to auth, assume token is dead
+
+      if (appData) setApplications(appData);
+    } catch (err) {
+      console.error('[Admin] Error loading full CMS data:', err);
+    }
+  }, [token, onUnauthorized]);
+
+  return {
+    hero, about, settings, stats, solutions, industries, projects, clientLogos,
+    team, resources, faqs, jobOpenings, inquiries, applications,
+    fetchAdminData,
+    setHero, setAbout, setSettings, setStats, setSolutions, setIndustries,
+    setProjects, setClientLogos, setTeam, setResources, setFaqs, setJobOpenings
+  };
+}
