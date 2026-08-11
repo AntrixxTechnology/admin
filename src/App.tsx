@@ -4,6 +4,7 @@ import { AdminLayout, type AdminTab } from './components/AdminLayout';
 import { OverviewTab } from './components/tabs/OverviewTab';
 import { CoreContentTab } from './components/tabs/CoreContentTab';
 import { SolutionsTab } from './components/tabs/SolutionsTab';
+import { MediaManagerTab } from './components/tabs/MediaManagerTab';
 import { PortfolioTab } from './components/tabs/PortfolioTab';
 import { ResourcesTab } from './components/tabs/ResourcesTab';
 import { CareersTab } from './components/tabs/CareersTab';
@@ -228,6 +229,16 @@ const App: React.FC = () => {
             onEditIndustry={openIndustryModal}
             onDeleteSolution={(id) => handleDeleteGenericEntity('/admin/solutions', id, 'Solution')}
             onDeleteIndustry={(id) => handleDeleteGenericEntity('/admin/industries', id, 'Industry')}
+          />
+        )}
+
+        {activeTab === 'media' && (
+          <MediaManagerTab 
+            hero={data.hero} 
+            solutions={data.solutions} 
+            industries={data.industries} 
+            clientLogos={data.clientLogos} 
+            onRefreshData={data.fetchAdminData} 
           />
         )}
         

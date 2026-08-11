@@ -1,7 +1,7 @@
 import React from 'react';
 import { RefreshCw, LogOut, BarChart3, Layers, MessageSquare, Users, Image as ImageIcon, Briefcase, FileText } from 'lucide-react';
 
-export type AdminTab = 'overview' | 'core' | 'solutions' | 'portfolio' | 'resources' | 'jobs' | 'inquiries';
+export type AdminTab = 'overview' | 'core' | 'solutions' | 'media' | 'portfolio' | 'resources' | 'jobs' | 'inquiries';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -30,6 +30,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'core', label: 'Core Content', icon: <FileText className="w-4 h-4" /> },
     { id: 'solutions', label: 'Solutions & Industries', icon: <Layers className="w-4 h-4" />, count: solutionCount },
+    { id: 'media', label: 'Media & Thumbnails', icon: <ImageIcon className="w-4 h-4" /> },
     { id: 'portfolio', label: 'Portfolio', icon: <ImageIcon className="w-4 h-4" /> },
     { id: 'resources', label: 'Resources & Team', icon: <Users className="w-4 h-4" /> },
     { id: 'jobs', label: 'Careers & Jobs', icon: <Briefcase className="w-4 h-4" />, count: jobCount + applicationCount },
