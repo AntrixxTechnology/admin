@@ -153,7 +153,15 @@ export interface JobOpening {
 
 // ─── Base Fetcher ─────────────────────────────────────────────────────────────
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+export const API_BASE = import.meta.env.VITE_API_URL || '/api/admin';
+export const HOST_BASE = API_BASE.replace(/\/api\/admin$/, '');
+
+export const getImageUrl = (url?: string) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/uploads/')) return `${HOST_BASE}${url}`;
+  return url;
+};
 
 async function fetchJson<T>(endpoint: string, fallback: T): Promise<T> {
   try {
@@ -270,3 +278,24 @@ export async function deleteAdminEntity(endpoint: string, token: string, id: str
   const res = await adminFetch(`${endpoint}/${id}`, token, { method: 'DELETE' });
   return res.ok;
 }
+
+export const uploadImage = async (file: File, bucket = 'general'): Promise<string> => {
+  const token = localStorage.getItem('antrixx_admin_token');
+  if (!token) throw new Error('Not authenticated');
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('bucket', bucket);
+
+  const res = await fetch(`${API_BASE}/upload`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error(`Upload failed: ${res.statusText}`);
+  const data = await res.json();
+  return data.url;
+};

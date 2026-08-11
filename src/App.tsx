@@ -76,6 +76,7 @@ const App: React.FC = () => {
     { key: 'slug', label: 'Slug', type: 'text', required: true },
     { key: 'description', label: 'Description', type: 'textarea' },
     { key: 'icon_name', label: 'Icon Name (Lucide)', type: 'text' },
+    { key: 'image_url', label: 'Image URL', type: 'image' },
     { key: 'sort_order', label: 'Sort Order', type: 'number' },
     { key: 'is_published', label: 'Published', type: 'checkbox' },
   ]);
@@ -86,6 +87,7 @@ const App: React.FC = () => {
     { key: 'client_name', label: 'Client Name', type: 'text' },
     { key: 'industry', label: 'Industry', type: 'text' },
     { key: 'location', label: 'Location', type: 'text' },
+    { key: 'image_url', label: 'Project Image', type: 'image' },
     { key: 'challenge', label: 'Challenge', type: 'textarea' },
     { key: 'solution', label: 'Solution Provided', type: 'textarea' },
     { key: 'sort_order', label: 'Sort Order', type: 'number' },
@@ -94,7 +96,7 @@ const App: React.FC = () => {
 
   const openClientLogoModal = (c: any) => openModal('client_logo', 'Client Logo', '/admin/client-logos', c, [
     { key: 'name', label: 'Client Name', type: 'text', required: true },
-    { key: 'logo_url', label: 'Logo Image URL', type: 'url' },
+    { key: 'logo_url', label: 'Logo Image', type: 'image' },
     { key: 'website_url', label: 'Website URL', type: 'url' },
     { key: 'sort_order', label: 'Sort Order', type: 'number' },
     { key: 'is_published', label: 'Published', type: 'checkbox' },
@@ -104,7 +106,7 @@ const App: React.FC = () => {
     { key: 'name', label: 'Name', type: 'text', required: true },
     { key: 'role', label: 'Role/Title', type: 'text', required: true },
     { key: 'bio', label: 'Bio', type: 'textarea' },
-    { key: 'image_url', label: 'Profile Image URL', type: 'url' },
+    { key: 'image_url', label: 'Profile Image', type: 'image' },
     { key: 'linkedin_url', label: 'LinkedIn URL', type: 'url' },
     { key: 'sort_order', label: 'Sort Order', type: 'number' },
     { key: 'is_published', label: 'Published', type: 'checkbox' },
@@ -116,6 +118,7 @@ const App: React.FC = () => {
     { key: 'category', label: 'Category', type: 'text', required: true },
     { key: 'summary', label: 'Summary', type: 'textarea' },
     { key: 'author', label: 'Author', type: 'text' },
+    { key: 'cover_image_url', label: 'Cover Image', type: 'image' },
     { key: 'download_file_url', label: 'Download File URL', type: 'url' },
     { key: 'sort_order', label: 'Sort Order', type: 'number' },
     { key: 'is_published', label: 'Published', type: 'checkbox' },

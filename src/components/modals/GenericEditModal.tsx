@@ -4,7 +4,7 @@ import { X, Save } from 'lucide-react';
 export type FieldConfig = {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'checkbox' | 'url';
+  type: 'text' | 'textarea' | 'number' | 'checkbox' | 'url' | 'image';
   required?: boolean;
 };
 
@@ -21,7 +21,22 @@ export const GenericEditModal: React.FC<GenericEditModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<any>(initialData || {});
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
   const [error, setError] = useState('');
+
+  const handleImageUpload = async (key: string, file: File) => {
+    try {
+      setUploading(prev => ({ ...prev, [key]: true }));
+      setError('');
+      const { uploadImage, getImageUrl } = await import('../../api/client');
+      const url = await uploadImage(file, 'general');
+      handleChange(key, getImageUrl(url));
+    } catch (err: any) {
+      setError(err.message || 'Image upload failed');
+    } finally {
+      setUploading(prev => ({ ...prev, [key]: false }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,6 +109,20 @@ export const GenericEditModal: React.FC<GenericEditModalProps> = ({
                   onChange={e => handleChange(f.key, parseFloat(e.target.value))}
                   className="w-full p-2 border border-gray200 rounded-md bg-offWhite focus:border-amberAccent focus:outline-none"
                 />
+              ) : f.type === 'image' ? (
+                <div className="space-y-2">
+                  {formData[f.key] && (
+                    <img src={formData[f.key]} alt="Preview" className="h-20 w-auto rounded border border-gray200 object-contain bg-offWhite" />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => e.target.files?.[0] && handleImageUpload(f.key, e.target.files[0])}
+                    disabled={uploading[f.key]}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-amberAccent/10 file:text-amberAccent hover:file:bg-amberAccent/20 disabled:opacity-50"
+                  />
+                  {uploading[f.key] && <span className="text-xs text-amberAccent">Uploading...</span>}
+                </div>
               ) : (
                 <input 
                   type={f.type === 'url' ? 'url' : 'text'} 

@@ -17,8 +17,33 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({ hero, about, set
   const [settingsForm, setSettingsForm] = useState<Partial<SiteSettings>>(settings || {});
   
   const [saving, setSaving] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [uploadingAbout, setUploadingAbout] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  const handleImageUpload = async (file: File, type: 'hero' | 'about') => {
+    try {
+      if (type === 'hero') setUploadingHero(true);
+      else setUploadingAbout(true);
+      setError('');
+      
+      const { uploadImage, getImageUrl } = await import('../../api/client');
+      const url = await uploadImage(file, 'general');
+      const fullUrl = getImageUrl(url);
+      
+      if (type === 'hero') {
+        setHeroForm(prev => ({ ...prev, background_image_url: fullUrl }));
+      } else {
+        setAboutForm(prev => ({ ...prev, hero_image_url: fullUrl }));
+      }
+    } catch (err: any) {
+      setError(err.message || 'Image upload failed');
+    } finally {
+      if (type === 'hero') setUploadingHero(false);
+      else setUploadingAbout(false);
+    }
+  };
 
   const handleSaveHero = async () => {
     if (!token) return;
@@ -112,7 +137,19 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({ hero, about, set
           </div>
           <div>
             <label className="block font-bold text-gray-700 mb-1">Background Image URL</label>
-            <input type="text" value={heroForm.background_image_url || ''} onChange={(e) => setHeroForm({...heroForm, background_image_url: e.target.value})} className="w-full p-2 border border-gray200 rounded-md bg-offWhite" />
+            <div className="space-y-2">
+              {heroForm.background_image_url && (
+                <img src={heroForm.background_image_url} alt="Hero bg" className="h-20 w-auto rounded border border-gray200 object-contain bg-offWhite" />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'hero')}
+                disabled={uploadingHero}
+                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-amberAccent/10 file:text-amberAccent hover:file:bg-amberAccent/20 disabled:opacity-50"
+              />
+              {uploadingHero && <span className="text-xs text-amberAccent">Uploading...</span>}
+            </div>
           </div>
           <div className="md:col-span-2">
             <label className="block font-bold text-gray-700 mb-1">Headline</label>
@@ -148,6 +185,22 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({ hero, about, set
             <div>
               <label className="block font-bold text-gray-700 mb-1">Vision</label>
               <textarea rows={3} value={aboutForm.vision || ''} onChange={(e) => setAboutForm({...aboutForm, vision: e.target.value})} className="w-full p-2 border border-gray200 rounded-md bg-offWhite" />
+            </div>
+          </div>
+          <div>
+            <label className="block font-bold text-gray-700 mb-1">About Image</label>
+            <div className="space-y-2">
+              {aboutForm.hero_image_url && (
+                <img src={aboutForm.hero_image_url} alt="About hero" className="h-20 w-auto rounded border border-gray200 object-contain bg-offWhite" />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'about')}
+                disabled={uploadingAbout}
+                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-amberAccent/10 file:text-amberAccent hover:file:bg-amberAccent/20 disabled:opacity-50"
+              />
+              {uploadingAbout && <span className="text-xs text-amberAccent">Uploading...</span>}
             </div>
           </div>
         </div>
