@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import { ImageIcon, UploadCloud, CheckCircle2 } from 'lucide-react';
-import { HeroContent, SolutionItem, IndustryItem, ClientLogoItem, uploadImage, getImageUrl } from '../../api/client';
+import { ImageIcon, UploadCloud, CheckCircle2, Save, AlertCircle } from 'lucide-react';
+import type { HeroContent, SolutionItem, IndustryItem, ClientLogoItem, ProjectItem } from '../../api/client';
+import { uploadImage, getImageUrl } from '../../api/client';
 
 interface MediaManagerTabProps {
   hero: HeroContent | null;
   solutions: SolutionItem[];
   industries: IndustryItem[];
   clientLogos: ClientLogoItem[];
+  projects: ProjectItem[];
   onRefreshData: () => void;
 }
 
-export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({ hero, solutions, industries, clientLogos, onRefreshData }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'home' | 'solutions' | 'industries'>('home');
+export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({ 
+  hero, solutions, industries, clientLogos, projects, onRefreshData 
+}) => {
+  const [activeSubTab, setActiveSubTab] = useState<'home' | 'solutions' | 'industries' | 'portfolio' | 'logos'>('home');
   const [uploading, setUploading] = useState<string | null>(null);
 
   const handleImageUpload = async (key: string, file: File, entityType: string, id: string) => {
@@ -29,6 +33,12 @@ export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({ hero, solution
       } else if (entityType === 'industry') {
         const item = industries.find(i => i.id === id);
         if (item) await saveAdminEntity('/admin/industries', token, { ...item, image_url: url });
+      } else if (entityType === 'project') {
+        const item = projects.find(i => i.id === id);
+        if (item) await saveAdminEntity('/admin/projects', token, { ...item, image_url: url });
+      } else if (entityType === 'client_logo') {
+        const item = clientLogos.find(i => i.id === id);
+        if (item) await saveAdminEntity('/admin/client-logos', token, { ...item, logo_url: url });
       }
 
       onRefreshData();
@@ -80,18 +90,12 @@ export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({ hero, solution
       </div>
 
       {/* Sub Tabs */}
-      <div className="flex gap-4 border-b border-gray200 mb-6">
-        {['home', 'solutions', 'industries'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveSubTab(tab as any)}
-            className={`pb-3 px-1 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${
-              activeSubTab === tab ? 'border-amberAccent text-inkBlack' : 'border-transparent text-gray-400 hover:text-inkBlack'
-            }`}
-          >
-            {tab.replace('-', ' ')}
-          </button>
-        ))}
+      <div className="flex gap-6 border-b border-gray200 mb-6">
+        <button onClick={() => setActiveSubTab('home')} className={`pb-2 text-xs font-bold uppercase tracking-wider ${activeSubTab === 'home' ? 'text-inkBlack border-b-2 border-amberAccent' : 'text-gray-400 hover:text-inkBlack'}`}>Home</button>
+        <button onClick={() => setActiveSubTab('solutions')} className={`pb-2 text-xs font-bold uppercase tracking-wider ${activeSubTab === 'solutions' ? 'text-inkBlack border-b-2 border-amberAccent' : 'text-gray-400 hover:text-inkBlack'}`}>Solutions</button>
+        <button onClick={() => setActiveSubTab('industries')} className={`pb-2 text-xs font-bold uppercase tracking-wider ${activeSubTab === 'industries' ? 'text-inkBlack border-b-2 border-amberAccent' : 'text-gray-400 hover:text-inkBlack'}`}>Industries</button>
+        <button onClick={() => setActiveSubTab('portfolio')} className={`pb-2 text-xs font-bold uppercase tracking-wider ${activeSubTab === 'portfolio' ? 'text-inkBlack border-b-2 border-amberAccent' : 'text-gray-400 hover:text-inkBlack'}`}>Portfolio</button>
+        <button onClick={() => setActiveSubTab('logos')} className={`pb-2 text-xs font-bold uppercase tracking-wider ${activeSubTab === 'logos' ? 'text-inkBlack border-b-2 border-amberAccent' : 'text-gray-400 hover:text-inkBlack'}`}>Logos</button>
       </div>
 
       {/* Tab Content */}
@@ -126,14 +130,28 @@ export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({ hero, solution
         )}
 
         {activeSubTab === 'industries' && (
-          <div className="space-y-6">
-            <h3 className="font-display font-bold text-lg border-b border-gray200 pb-2">Industries Thumbnails</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-              {industries.map(ind => (
-                <div key={ind.id}>
-                  {renderUploadBox(`ind-${ind.id}`, ind.image_url, ind.title, 'industry', ind.id)}
-                </div>
-              ))}
+          <div className="bg-white p-6 rounded-2xl shadow-cardHover border border-gray200">
+            <h3 className="text-lg font-display font-bold text-inkBlack mb-6">Industries Images</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {industries.map(ind => renderUploadBox(ind.id, ind.image_url, ind.title, 'industry', ind.id))}
+            </div>
+          </div>
+        )}
+
+        {activeSubTab === 'portfolio' && (
+          <div className="bg-white p-6 rounded-2xl shadow-cardHover border border-gray200">
+            <h3 className="text-lg font-display font-bold text-inkBlack mb-6">Portfolio Thumbnails</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {projects.map(proj => renderUploadBox(proj.id, proj.image_url, proj.title, 'project', proj.id))}
+            </div>
+          </div>
+        )}
+
+        {activeSubTab === 'logos' && (
+          <div className="bg-white p-6 rounded-2xl shadow-cardHover border border-gray200">
+            <h3 className="text-lg font-display font-bold text-inkBlack mb-6">Client Logos</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {clientLogos.map(logo => renderUploadBox(logo.id, logo.logo_url, logo.name, 'client_logo', logo.id))}
             </div>
           </div>
         )}

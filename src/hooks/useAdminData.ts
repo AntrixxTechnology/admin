@@ -13,6 +13,10 @@ import {
   type ResourcePost,
   type FaqItem,
   type JobOpening,
+  type BlogPost,
+  type ErpClient,
+  type ErpTransaction,
+  type ErpInvoice,
 } from '../api/client';
 
 export interface AdminDataState {
@@ -28,6 +32,10 @@ export interface AdminDataState {
   resources: ResourcePost[];
   faqs: FaqItem[];
   jobOpenings: JobOpening[];
+  blogs: BlogPost[];
+  erpClients: ErpClient[];
+  erpTransactions: ErpTransaction[];
+  erpInvoices: ErpInvoice[];
   inquiries: any[];
   applications: any[];
   fetchAdminData: () => Promise<void>;
@@ -45,6 +53,10 @@ export interface AdminDataState {
   setResources: React.Dispatch<React.SetStateAction<ResourcePost[]>>;
   setFaqs: React.Dispatch<React.SetStateAction<FaqItem[]>>;
   setJobOpenings: React.Dispatch<React.SetStateAction<JobOpening[]>>;
+  setBlogs: React.Dispatch<React.SetStateAction<BlogPost[]>>;
+  setErpClients: React.Dispatch<React.SetStateAction<ErpClient[]>>;
+  setErpTransactions: React.Dispatch<React.SetStateAction<ErpTransaction[]>>;
+  setErpInvoices: React.Dispatch<React.SetStateAction<ErpInvoice[]>>;
   systemStatus: any | null;
 }
 
@@ -61,6 +73,10 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
   const [resources, setResources] = useState<ResourcePost[]>([]);
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
   const [jobOpenings, setJobOpenings] = useState<JobOpening[]>([]);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [erpClients, setErpClients] = useState<ErpClient[]>([]);
+  const [erpTransactions, setErpTransactions] = useState<ErpTransaction[]>([]);
+  const [erpInvoices, setErpInvoices] = useState<ErpInvoice[]>([]);
   
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
@@ -73,6 +89,7 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
         heroData, aboutData, settingsData, statsData, 
         solutionsData, industriesData, projectsData, clientLogosData,
         teamData, resourcesData, faqsData, jobOpeningsData,
+        blogsData, erpClientsData, erpTransactionsData, erpInvoicesData,
         inqData, appData, statusData
       ] = await Promise.all([
         apiFetch<HeroContent>('/admin/hero', token),
@@ -87,6 +104,10 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
         apiFetch<ResourcePost[]>('/admin/resources', token),
         apiFetch<FaqItem[]>('/admin/faqs', token),
         apiFetch<JobOpening[]>('/admin/job-openings', token),
+        apiFetch<BlogPost[]>('/admin/blogs', token),
+        apiFetch<ErpClient[]>('/admin/erp-clients', token),
+        apiFetch<ErpTransaction[]>('/admin/erp-transactions', token),
+        apiFetch<ErpInvoice[]>('/admin/erp-invoices', token),
         apiFetch<any[]>('/admin/inquiries', token),
         apiFetch<any[]>('/admin/applications', token),
         apiFetch<any>('/status', token).catch(() => null) // public route, ignore auth error
@@ -104,6 +125,10 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
       if (resourcesData) setResources(resourcesData);
       if (faqsData) setFaqs(faqsData);
       if (jobOpeningsData) setJobOpenings(jobOpeningsData);
+      if (blogsData) setBlogs(blogsData);
+      if (erpClientsData) setErpClients(erpClientsData);
+      if (erpTransactionsData) setErpTransactions(erpTransactionsData);
+      if (erpInvoicesData) setErpInvoices(erpInvoicesData);
       
       if (inqData) setInquiries(inqData);
       else onUnauthorized(); // If one protected route fails due to auth, assume token is dead
@@ -117,9 +142,10 @@ export function useAdminData(token: string | null, onUnauthorized: () => void): 
 
   return {
     hero, about, settings, stats, solutions, industries, projects, clientLogos,
-    team, resources, faqs, jobOpenings, inquiries, applications, systemStatus,
+    team, resources, faqs, jobOpenings, blogs, erpClients, erpTransactions, erpInvoices, inquiries, applications, systemStatus,
     fetchAdminData,
     setHero, setAbout, setSettings, setStats, setSolutions, setIndustries,
-    setProjects, setClientLogos, setTeam, setResources, setFaqs, setJobOpenings
+    setProjects, setClientLogos, setTeam, setResources, setFaqs, setJobOpenings,
+    setBlogs, setErpClients, setErpTransactions, setErpInvoices
   };
 }

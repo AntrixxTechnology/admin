@@ -9,6 +9,8 @@ import { PortfolioTab } from './components/tabs/PortfolioTab';
 import { ResourcesTab } from './components/tabs/ResourcesTab';
 import { CareersTab } from './components/tabs/CareersTab';
 import { InquiriesTab } from './components/tabs/InquiriesTab';
+import { BlogsTab } from './components/tabs/BlogsTab';
+import { ErpTab } from './components/tabs/ErpTab';
 import { GenericEditModal, type FieldConfig } from './components/modals/GenericEditModal';
 
 import { useAdminAuth } from './hooks/useAdminAuth';
@@ -86,14 +88,51 @@ const App: React.FC = () => {
   const openProjectModal = (p: any) => openModal('project', 'Project', '/admin/projects', p, [
     { key: 'title', label: 'Title', type: 'text', required: true },
     { key: 'slug', label: 'Slug', type: 'text', required: true },
-    { key: 'client_name', label: 'Client Name', type: 'text' },
-    { key: 'industry', label: 'Industry', type: 'text' },
-    { key: 'location', label: 'Location', type: 'text' },
-    { key: 'image_url', label: 'Project Image', type: 'image' },
-    { key: 'challenge', label: 'Challenge', type: 'textarea' },
-    { key: 'solution', label: 'Solution Provided', type: 'textarea' },
-    { key: 'sort_order', label: 'Sort Order', type: 'number' },
+    { key: 'role_title', label: 'Role Title', type: 'text' },
+    { key: 'notes', label: 'Admin Notes', type: 'textarea' },
+    { key: 'status', label: 'Status', type: 'text' },
+  ]);
+
+  const openBlogModal = (b: any) => openModal('blog', 'Blog Post', '/admin/blogs', b, [
+    { key: 'title', label: 'Title', type: 'text', required: true },
+    { key: 'slug', label: 'Slug', type: 'text', required: true },
+    { key: 'author', label: 'Author', type: 'text', required: true },
+    { key: 'featured_image_url', label: 'Featured Image', type: 'image' },
+    { key: 'content', label: 'Content (HTML/Markdown)', type: 'textarea' },
+    { key: 'meta_title', label: 'Meta Title', type: 'text' },
+    { key: 'meta_description', label: 'Meta Description', type: 'textarea' },
     { key: 'is_published', label: 'Published', type: 'checkbox' },
+  ]);
+
+  const openErpClientModal = (c: any) => openModal('erp_client', 'ERP Client', '/admin/erp-clients', c, [
+    { key: 'company_name', label: 'Company Name', type: 'text', required: true },
+    { key: 'contact_person', label: 'Contact Person', type: 'text' },
+    { key: 'email', label: 'Email', type: 'text' },
+    { key: 'phone', label: 'Phone', type: 'text' },
+    { key: 'address', label: 'Address', type: 'textarea' },
+    { key: 'status', label: 'Status', type: 'text' },
+  ]);
+
+  const openErpTransactionModal = (t: any) => openModal('erp_transaction', 'Transaction', '/admin/erp-transactions', t, [
+    { key: 'transaction_date', label: 'Transaction Date (YYYY-MM-DD)', type: 'text', required: true },
+    { key: 'type', label: 'Type (Income/Expense)', type: 'text', required: true },
+    { key: 'category', label: 'Category', type: 'text', required: true },
+    { key: 'amount', label: 'Amount', type: 'number', required: true },
+    { key: 'description', label: 'Description', type: 'textarea' },
+    { key: 'client_id', label: 'Client ID', type: 'text' },
+    { key: 'reference_number', label: 'Reference Number', type: 'text' },
+    { key: 'status', label: 'Status', type: 'text' },
+  ]);
+
+  const openErpInvoiceModal = (i: any) => openModal('erp_invoice', 'Invoice', '/admin/erp-invoices', i, [
+    { key: 'invoice_number', label: 'Invoice Number', type: 'text', required: true },
+    { key: 'client_id', label: 'Client ID', type: 'text', required: true },
+    { key: 'issue_date', label: 'Issue Date (YYYY-MM-DD)', type: 'text', required: true },
+    { key: 'due_date', label: 'Due Date (YYYY-MM-DD)', type: 'text', required: true },
+    { key: 'total_amount', label: 'Total Amount', type: 'number', required: true },
+    { key: 'amount_paid', label: 'Amount Paid', type: 'number' },
+    { key: 'status', label: 'Status', type: 'text' },
+    { key: 'notes', label: 'Notes', type: 'textarea' },
   ]);
 
   const openClientLogoModal = (c: any) => openModal('client_logo', 'Client Logo', '/admin/client-logos', c, [
@@ -202,6 +241,7 @@ const App: React.FC = () => {
         inquiryCount={data.inquiries.length}
         applicationCount={data.applications.length}
         jobCount={data.jobOpenings.length}
+        blogCount={data.blogs.length}
       >
         {saveSuccess && (
           <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2">
@@ -209,7 +249,7 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'overview' && <OverviewTab solutionCount={data.solutions.length + data.industries.length} clientCount={data.clientLogos.length} inquiryCount={data.inquiries.length} applicationCount={data.applications.length} systemStatus={data.systemStatus} onNavigate={setActiveTab} />}
+        {activeTab === 'overview' && <OverviewTab solutionCount={data.solutions.length + data.industries.length} clientCount={data.clientLogos.length} inquiryCount={data.inquiries.length} applicationCount={data.applications.length} systemStatus={data.systemStatus} erpTransactions={data.erpTransactions} onNavigate={setActiveTab} />}
         
         {activeTab === 'core' && (
           <CoreContentTab 
@@ -238,6 +278,7 @@ const App: React.FC = () => {
             solutions={data.solutions} 
             industries={data.industries} 
             clientLogos={data.clientLogos} 
+            projects={data.projects}
             onRefreshData={data.fetchAdminData} 
           />
         )}
@@ -279,6 +320,28 @@ const App: React.FC = () => {
         
         {activeTab === 'inquiries' && (
           <InquiriesTab inquiries={data.inquiries} onExportCsv={() => window.open(exportInquiriesCsvUrl(auth.token || ''), '_blank')} />
+        )}
+
+        {activeTab === 'blogs' && (
+          <BlogsTab 
+            blogs={data.blogs} 
+            onEditBlog={openBlogModal} 
+            onDeleteBlog={(id) => handleDeleteGenericEntity('/admin/blogs', id, 'Blog Post')} 
+          />
+        )}
+
+        {activeTab === 'erp' && (
+          <ErpTab 
+            clients={data.erpClients}
+            transactions={data.erpTransactions}
+            invoices={data.erpInvoices}
+            onEditClient={openErpClientModal}
+            onDeleteClient={(id) => handleDeleteGenericEntity('/admin/erp-clients', id, 'ERP Client')}
+            onEditTransaction={openErpTransactionModal}
+            onDeleteTransaction={(id) => handleDeleteGenericEntity('/admin/erp-transactions', id, 'Transaction')}
+            onEditInvoice={openErpInvoiceModal}
+            onDeleteInvoice={(id) => handleDeleteGenericEntity('/admin/erp-invoices', id, 'Invoice')}
+          />
         )}
 
       </AdminLayout>

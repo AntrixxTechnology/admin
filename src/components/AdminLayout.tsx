@@ -1,7 +1,7 @@
 import React from 'react';
 import { RefreshCw, LogOut, BarChart3, Layers, MessageSquare, Users, Image as ImageIcon, Briefcase, FileText } from 'lucide-react';
 
-export type AdminTab = 'overview' | 'core' | 'solutions' | 'media' | 'portfolio' | 'resources' | 'jobs' | 'inquiries';
+export type AdminTab = 'overview' | 'core' | 'solutions' | 'media' | 'portfolio' | 'resources' | 'jobs' | 'inquiries' | 'blogs' | 'erp';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ interface AdminLayoutProps {
   inquiryCount: number;
   applicationCount: number;
   jobCount?: number;
+  blogCount?: number;
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({
@@ -25,16 +26,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   inquiryCount,
   applicationCount,
   jobCount = 0,
+  blogCount = 0,
 }) => {
-  const tabs: { id: AdminTab; label: string; icon: React.ReactNode; count?: number }[] = [
+  const tabs: { id: AdminTab; label: string; icon: React.ReactNode; count?: number; group?: string }[] = [
     { id: 'overview', label: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
     { id: 'core', label: 'Core Content', icon: <FileText className="w-4 h-4" /> },
     { id: 'solutions', label: 'Solutions & Industries', icon: <Layers className="w-4 h-4" />, count: solutionCount },
     { id: 'media', label: 'Media & Thumbnails', icon: <ImageIcon className="w-4 h-4" /> },
     { id: 'portfolio', label: 'Portfolio', icon: <ImageIcon className="w-4 h-4" /> },
+    { id: 'blogs', label: 'Blogs & Articles', icon: <FileText className="w-4 h-4" />, count: blogCount },
     { id: 'resources', label: 'Resources & Team', icon: <Users className="w-4 h-4" /> },
     { id: 'jobs', label: 'Careers & Jobs', icon: <Briefcase className="w-4 h-4" />, count: jobCount + applicationCount },
     { id: 'inquiries', label: 'Inquiries & Leads', icon: <MessageSquare className="w-4 h-4" />, count: inquiryCount },
+    { id: 'erp', label: 'ERP & Business', icon: <BarChart3 className="w-4 h-4" /> },
   ];
 
   return (

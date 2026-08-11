@@ -4,14 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        inkBlack: '#1A1A1A',
+        inkBlack: '#111111',
+        inkDark: '#222222',
         amberAccent: '#F2A33C',
         amberAccentDark: '#D98A22',
-        offWhite: '#F7F7F5',
-        charcoal: '#14141A',
+        offWhite: '#F8F9FA',
+        charcoal: '#343A40',
         gray100: '#F3F3F3',
-        gray200: '#E5E5E5',
-        gray500: '#6B6B6B',
+        gray200: '#E9ECEF',
+        gray500: '#6C757D',
       },
       fontFamily: {
         display: ['Manrope', 'sans-serif'],
