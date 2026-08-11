@@ -67,6 +67,7 @@ const App: React.FC = () => {
     { key: 'short_description', label: 'Short Description', type: 'textarea' },
     { key: 'full_description', label: 'Full Description', type: 'textarea' },
     { key: 'icon_name', label: 'Icon Name (Lucide)', type: 'text' },
+    { key: 'hero_image_url', label: 'Hero Image (Thumbnail)', type: 'image' },
     { key: 'sort_order', label: 'Sort Order', type: 'number' },
     { key: 'is_published', label: 'Published', type: 'checkbox' },
   ]);

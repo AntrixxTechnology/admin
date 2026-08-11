@@ -1,6 +1,7 @@
 import React from 'react';
 import { Edit2, Plus, Trash2 } from 'lucide-react';
 import type { ProjectItem, ClientLogoItem } from '../../api/client';
+import { getImageUrl } from '../../api/client';
 
 interface PortfolioTabProps {
   projects: ProjectItem[];
@@ -100,7 +101,7 @@ export const PortfolioTab: React.FC<PortfolioTabProps> = ({
                 <tr key={c.id} className="hover:bg-offWhite/50 transition-colors">
                   <td className="p-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded bg-offWhite border border-gray200 flex items-center justify-center p-1">
-                      {c.logo_url ? <img src={c.logo_url} alt={c.name} className="max-w-full max-h-full object-contain" /> : <span className="text-gray-400 font-bold">{c.name.charAt(0)}</span>}
+                      {c.logo_url ? <img src={getImageUrl(c.logo_url)} alt={c.name} className="max-w-full max-h-full object-contain" /> : <span className="text-gray-400 font-bold">{c.name.charAt(0)}</span>}
                     </div>
                     <span className="font-bold text-inkBlack">{c.name}</span>
                   </td>
