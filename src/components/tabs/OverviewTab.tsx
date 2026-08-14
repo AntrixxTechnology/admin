@@ -134,10 +134,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             note={systemStatus?.storage === 'SupabaseStorageProvider' ? 'Cloud Object Storage Active' : 'Swappable to Supabase Storage'}
           />
           <StatusCard
-            label="API Port"
-            value={systemStatus ? `http://localhost:${systemStatus.port} (Active)` : 'Loading...'}
+            label="API Server"
+            value={systemStatus ? 'https://antrixx-backend.vercel.app' : 'Loading...'}
             valueColor="text-emerald-600"
-            note={systemStatus ? `Uptime: ${systemStatus.uptime_seconds}s` : ''}
+            note={systemStatus ? `Status: Active (${systemStatus.service || 'OK'})` : ''}
           />
         </div>
       </div>

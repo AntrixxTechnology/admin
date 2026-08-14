@@ -211,8 +211,8 @@ export interface JobOpening {
 
 // ─── Base Fetcher ─────────────────────────────────────────────────────────────
 
-export const API_BASE = import.meta.env.VITE_API_URL || '/api/admin';
-export const HOST_BASE = API_BASE.replace(/\/api\/admin$/, '');
+export const API_BASE = import.meta.env.VITE_API_URL || 'https://antrixx-backend.vercel.app/api';
+export const HOST_BASE = API_BASE.replace(/\/api(\/admin)?$/, '');
 
 export const getImageUrl = (url?: string) => {
   if (!url) return '';
@@ -346,7 +346,11 @@ export const uploadImage = async (file: File, bucket = 'general'): Promise<strin
   formData.append('file', file);
   formData.append('bucket', bucket);
 
-  const res = await fetch(`${API_BASE}/upload`, {
+  const uploadEndpoint = API_BASE.endsWith('/admin')
+    ? `${API_BASE}/upload`
+    : `${API_BASE}/admin/upload`;
+
+  const res = await fetch(uploadEndpoint, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -354,7 +358,17 @@ export const uploadImage = async (file: File, bucket = 'general'): Promise<strin
     body: formData,
   });
 
-  if (!res.ok) throw new Error(`Upload failed: ${res.statusText}`);
+  if (!res.ok) {
+    let errorMessage = res.statusText;
+    try {
+      const errJson = await res.json();
+      if (errJson && errJson.error) {
+        errorMessage = errJson.error;
+      }
+    } catch (_) {}
+    throw new Error(errorMessage || `HTTP ${res.status}`);
+  }
+
   const data = await res.json();
   return data.url;
 };
