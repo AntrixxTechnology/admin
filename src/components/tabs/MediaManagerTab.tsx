@@ -24,12 +24,19 @@ export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({
       const url = await uploadImage(file, 'general');
       
       const token = localStorage.getItem('antrixx_admin_token') || '';
-      const { updateAdminSingleton, updateSolution, saveAdminEntity } = await import('../../api/client');
+      const { updateAdminSingleton, saveAdminEntity, updateSolution } = await import('../../api/client');
 
       if (entityType === 'hero') {
-        await updateAdminSingleton('/admin/hero', token, { [key]: url });
+        const payload = hero ? { ...hero, [key]: url } : { [key]: url };
+        const ok = await updateAdminSingleton('/admin/hero', token, payload);
+        if (!ok) throw new Error('Failed to update hero record in database');
       } else if (entityType === 'solution') {
-        await updateSolution(token, id, { hero_image_url: url });
+        const item = solutions.find(s => s.id === id);
+        if (item) {
+          await saveAdminEntity('/admin/solutions', token, { ...item, hero_image_url: url });
+        } else {
+          await updateSolution(token, id, { hero_image_url: url });
+        }
       } else if (entityType === 'industry') {
         const item = industries.find(i => i.id === id);
         if (item) await saveAdminEntity('/admin/industries', token, { ...item, image_url: url });
@@ -41,7 +48,7 @@ export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({
         if (item) await saveAdminEntity('/admin/client-logos', token, { ...item, logo_url: url });
       }
 
-      onRefreshData();
+      await onRefreshData();
     } catch (err: any) {
       alert('Upload failed: ' + err.message);
     } finally {
