@@ -179,49 +179,13 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
             </h3>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setShowGuide(!showGuide)}
-              className="px-3 py-1.5 rounded-lg bg-amberAccent/10 text-amberAccent hover:bg-amberAccent/20 font-bold text-[11px] flex items-center gap-1.5 transition-colors"
-            >
-              <HelpCircle className="w-3.5 h-3.5" />
-              {showGuide ? 'Hide Layout Guide' : 'Where this appears?'}
-            </button>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-200 text-gray-400 hover:text-gray-700 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-gray-200 text-gray-400 hover:text-gray-700 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
-
-        {/* Visual Map / Client Guide Box */}
-        {showGuide && (
-          <div className="p-4 bg-amber-50/70 border-b border-amber-200 text-[#111] space-y-2 shrink-0 animate-fadeIn">
-            <div className="flex items-center justify-between">
-              <h4 className="font-display font-extrabold text-xs text-amber-900 flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-amber-600" /> Website Layout Section Guide
-              </h4>
-              <span className="text-[10px] text-amber-700 font-bold">Har field website par kahan render hoti hai:</span>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-              <div className="p-2 bg-white rounded-lg border border-amber-200 font-medium">
-                <strong className="text-amber-800 block">[1] Hero Banner:</strong> Title, Subtitle, Background Image, 3 Feature Badges.
-              </div>
-              <div className="p-2 bg-white rounded-lg border border-amber-200 font-medium">
-                <strong className="text-amber-800 block">[2] What We Cover:</strong> 3 Scope Cards with icons & descriptions.
-              </div>
-              <div className="p-2 bg-white rounded-lg border border-amber-200 font-medium">
-                <strong className="text-amber-800 block">[3] Products & Services:</strong> 3-column matrix checklist bullet points.
-              </div>
-              <div className="p-2 bg-white rounded-lg border border-amber-200 font-medium">
-                <strong className="text-amber-800 block">[4] Equipment & Specs:</strong> Photo carousel & dynamic specifications table.
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Tab Navigation */}
         <div className="flex border-b border-gray-200 bg-white px-5 shrink-0 overflow-x-auto">
@@ -229,7 +193,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
             { id: 'hero', label: '1. Hero & Badges', badge: 'Top Banner' },
             { id: 'scope', label: '2. What We Cover', badge: 'Scope Cards' },
             { id: 'services', label: '3. Products & Services', badge: 'Checklist' },
-            { id: 'equipment', label: '4. Equipment & Specs Table', badge: 'Carousel & Specs' },
+            { id: 'equipment', label: '4. Equipment & Specs Table', badge: 'Equipment Specs' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -410,10 +374,10 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
           {/* ========================================================================= */}
           {activeTab === 'scope' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-200 text-blue-900 text-[11px] flex items-center justify-between">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-200">
                 <div>
-                  <span className="font-bold uppercase tracking-wider text-[10px] bg-blue-200 text-blue-900 px-2 py-0.5 rounded mr-2">Section 1</span>
-                  <span><strong>What We Cover</strong> section me overview text aur scope feature cards show hote hain.</span>
+                  <h4 className="font-display font-extrabold text-sm text-inkBlack">Engineering Scope Cards</h4>
+                  <p className="text-gray-500 text-[11px]">Add or customize the core service cards shown in What We Cover.</p>
                 </div>
                 <button
                   type="button"
@@ -426,7 +390,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                       ],
                     });
                   }}
-                  className="px-2.5 py-1.5 rounded-md bg-amberAccent text-white font-bold text-[11px] flex items-center gap-1 shrink-0 shadow-sm"
+                  className="px-3.5 py-1.5 rounded-lg bg-amberAccent hover:bg-amberAccentDark text-white font-bold text-xs flex items-center gap-1.5 shrink-0 shadow-sm transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Scope Card
                 </button>
@@ -528,10 +492,10 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
           {/* ========================================================================= */}
           {activeTab === 'services' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-200 text-blue-900 text-[11px] flex items-center justify-between">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-200">
                 <div>
-                  <span className="font-bold uppercase tracking-wider text-[10px] bg-blue-200 text-blue-900 px-2 py-0.5 rounded mr-2">Section 2</span>
-                  <span><strong>Our Products & Services</strong> matrix me 3 columns me orange checkmark items render hote hain.</span>
+                  <h4 className="font-display font-extrabold text-sm text-inkBlack">Products & Services Checklist</h4>
+                  <p className="text-gray-500 text-[11px]">List all deliverables and service offerings for this solution.</p>
                 </div>
                 <button
                   type="button"
@@ -544,14 +508,13 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                       ],
                     });
                   }}
-                  className="px-2.5 py-1.5 rounded-md bg-amberAccent text-white font-bold text-[11px] flex items-center gap-1 shrink-0 shadow-sm"
+                  className="px-3.5 py-1.5 rounded-lg bg-amberAccent hover:bg-amberAccentDark text-white font-bold text-xs flex items-center gap-1.5 shrink-0 shadow-sm transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Add Item
+                  <Plus className="w-3.5 h-3.5" /> Add Checklist Item
                 </button>
               </div>
 
               <div className="space-y-2">
-                <label className="block font-bold text-gray-700">Checklist Points (Har item frontend me 3-column grid me arrange hota hai)</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {formData.products_and_services?.map((service, idx) => (
                     <div key={idx} className="flex items-center gap-2 p-2 bg-offWhite rounded-lg border border-gray-200">
@@ -588,10 +551,10 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
           {/* ========================================================================= */}
           {activeTab === 'equipment' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-200 text-blue-900 text-[11px] flex items-center justify-between">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-200">
                 <div>
-                  <span className="font-bold uppercase tracking-wider text-[10px] bg-blue-200 text-blue-900 px-2 py-0.5 rounded mr-2">Section 3</span>
-                  <span><strong>Explore Our Products</strong> carousel & dynamic specifications table for each equipment.</span>
+                  <h4 className="font-display font-extrabold text-sm text-inkBlack">Equipment Models & Specifications</h4>
+                  <p className="text-gray-500 text-[11px]">Manage equipment units, carousel photos, and technical specifications.</p>
                 </div>
                 <button
                   type="button"

@@ -86,42 +86,6 @@ export const SolutionsTab: React.FC<SolutionsTabProps> = ({
             </button>
           </div>
         </div>
-
-        <div className="pt-2 flex items-center justify-between border-t border-gray-100 text-[11px] text-gray-500">
-          <span>💡 Solution Cards visually mimic how they appear on the live website (<code>/solutions</code>).</span>
-          <button
-            onClick={() => setShowSectionGuide(!showSectionGuide)}
-            className="text-amberAccent hover:underline font-bold flex items-center gap-1"
-          >
-            <HelpCircle className="w-3.5 h-3.5" />
-            {showSectionGuide ? 'Hide Layout Guide' : 'How Solution Page Structure Works'}
-          </button>
-        </div>
-
-        {showSectionGuide && (
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-3 animate-fadeIn text-xs border-t border-gray-100">
-            <div className="p-3.5 bg-offWhite rounded-xl border border-gray-200">
-              <span className="w-5 h-5 rounded bg-amberAccent text-white flex items-center justify-center font-bold text-[10px] mb-1.5">1</span>
-              <strong className="text-inkBlack block mb-0.5">Top Dark Hero</strong>
-              <p className="text-gray-500 text-[11px]">Title, Tagline, Background Photo & 3 Value Badges.</p>
-            </div>
-            <div className="p-3.5 bg-offWhite rounded-xl border border-gray-200">
-              <span className="w-5 h-5 rounded bg-amberAccent text-white flex items-center justify-center font-bold text-[10px] mb-1.5">2</span>
-              <strong className="text-inkBlack block mb-0.5">What We Cover</strong>
-              <p className="text-gray-500 text-[11px]">Scope Subsystem Cards + Right Expert Guidance Sidebar.</p>
-            </div>
-            <div className="p-3.5 bg-offWhite rounded-xl border border-gray-200">
-              <span className="w-5 h-5 rounded bg-amberAccent text-white flex items-center justify-center font-bold text-[10px] mb-1.5">3</span>
-              <strong className="text-inkBlack block mb-0.5">Products & Services</strong>
-              <p className="text-gray-500 text-[11px]">3-column checklist matrix with orange checkmarks.</p>
-            </div>
-            <div className="p-3.5 bg-offWhite rounded-xl border border-gray-200">
-              <span className="w-5 h-5 rounded bg-amberAccent text-white flex items-center justify-center font-bold text-[10px] mb-1.5">4</span>
-              <strong className="text-inkBlack block mb-0.5">Equipment & Specs</strong>
-              <p className="text-gray-500 text-[11px]">Equipment photos, tabs, and per-product Specs Table.</p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* ========================================================================= */}
