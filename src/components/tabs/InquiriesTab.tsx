@@ -16,7 +16,7 @@ export const InquiriesTab: React.FC<InquiriesTabProps> = ({ inquiries, onExportC
             Contact Inquiries & Technical Audit Requests
           </h2>
           <p className="text-xs text-gray-500">
-            Submissions captured from website forms (<code>/api/contact</code>).
+            Inquiries and audit requests submitted through the website forms.
           </p>
         </div>
         <button onClick={onExportCsv} className="btn-primary shrink-0" style={{ backgroundColor: '#059669' }}>

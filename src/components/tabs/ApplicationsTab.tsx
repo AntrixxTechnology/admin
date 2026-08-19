@@ -19,7 +19,7 @@ export const ApplicationsTab: React.FC<ApplicationsTabProps> = ({
             Job Applications & Resumes
           </h2>
           <p className="text-xs text-gray-500">
-            Resumes submitted via the Careers portal (<code>/api/careers/apply</code>).
+            Resumes and job applications received through the careers portal.
           </p>
         </div>
         <button onClick={onExportCsv} className="btn-primary shrink-0" style={{ backgroundColor: '#059669' }}>
