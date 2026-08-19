@@ -12,6 +12,9 @@ import { InquiriesTab } from './components/tabs/InquiriesTab';
 import { BlogsTab } from './components/tabs/BlogsTab';
 import { ErpTab } from './components/tabs/ErpTab';
 import { GenericEditModal, type FieldConfig } from './components/modals/GenericEditModal';
+import { EditSolutionModal } from './components/modals/EditSolutionModal';
+import { EditIndustryModal } from './components/modals/EditIndustryModal';
+import type { SolutionItem, IndustryItem } from './api/client';
 
 import { useAdminAuth } from './hooks/useAdminAuth';
 import { useAdminData } from './hooks/useAdminData';
@@ -23,6 +26,10 @@ const App: React.FC = () => {
   
   // Generic Modal State
   const [editingEntity, setEditingEntity] = useState<{ type: string; title: string; endpoint: string; data: any; fields: FieldConfig[] } | null>(null);
+  
+  // Dedicated Modals State
+  const [editingSolution, setEditingSolution] = useState<SolutionItem | Partial<SolutionItem> | null>(null);
+  const [editingIndustry, setEditingIndustry] = useState<IndustryItem | Partial<IndustryItem> | null>(null);
   const [saveSuccess, setSaveSuccess] = useState('');
 
   const data = useAdminData(auth.token, auth.handleLogout);
@@ -44,6 +51,30 @@ const App: React.FC = () => {
       setTimeout(() => setSaveSuccess(''), 4000);
     }
     return ok;
+  };
+
+  const handleSaveSolution = async (solutionData: SolutionItem): Promise<void> => {
+    if (!auth.token) return;
+    const ok = await saveAdminEntity('/admin/solutions', auth.token, solutionData);
+    if (ok) {
+      setSaveSuccess(`Solution "${solutionData.title}" saved successfully!`);
+      data.fetchAdminData();
+      setTimeout(() => setSaveSuccess(''), 4000);
+    } else {
+      throw new Error('Failed to save solution.');
+    }
+  };
+
+  const handleSaveIndustry = async (industryData: Partial<IndustryItem>): Promise<void> => {
+    if (!auth.token) return;
+    const ok = await saveAdminEntity('/admin/industries', auth.token, industryData);
+    if (ok) {
+      setSaveSuccess(`Industry "${industryData.title}" saved successfully!`);
+      data.fetchAdminData();
+      setTimeout(() => setSaveSuccess(''), 4000);
+    } else {
+      throw new Error('Failed to save industry.');
+    }
   };
 
   const handleDeleteGenericEntity = async (endpoint: string, id: string, title: string) => {
@@ -85,12 +116,17 @@ const App: React.FC = () => {
     { key: 'is_published', label: 'Published', type: 'checkbox' },
   ]);
 
-  const openProjectModal = (p: any) => openModal('project', 'Project', '/admin/projects', p, [
-    { key: 'title', label: 'Title', type: 'text', required: true },
-    { key: 'slug', label: 'Slug', type: 'text', required: true },
-    { key: 'role_title', label: 'Role Title', type: 'text' },
-    { key: 'notes', label: 'Admin Notes', type: 'textarea' },
-    { key: 'status', label: 'Status', type: 'text' },
+  const openProjectModal = (p: any) => openModal('project', 'Project Case Study', '/admin/projects', p, [
+    { key: 'title', label: 'Project Title', type: 'text', required: true },
+    { key: 'slug', label: 'URL Slug', type: 'text', required: true },
+    { key: 'client_name', label: 'Client / Plant Name', type: 'text', required: true },
+    { key: 'industry', label: 'Industry Vertical', type: 'text', required: true },
+    { key: 'location', label: 'Plant Location', type: 'text' },
+    { key: 'image_url', label: 'Project Cover Image', type: 'image' },
+    { key: 'challenge', label: 'The Engineering Challenge', type: 'textarea' },
+    { key: 'solution', label: 'The Antrixx Solution Delivered', type: 'textarea' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' },
+    { key: 'is_published', label: 'Published (Live)', type: 'checkbox' },
   ]);
 
   const openBlogModal = (b: any) => openModal('blog', 'Blog Post', '/admin/blogs', b, [
@@ -265,8 +301,8 @@ const App: React.FC = () => {
           <SolutionsTab 
             solutions={data.solutions} 
             industries={data.industries}
-            onEditSolution={openSolutionModal} 
-            onEditIndustry={openIndustryModal}
+            onEditSolution={(s) => setEditingSolution(s)} 
+            onEditIndustry={(i) => setEditingIndustry(i)}
             onDeleteSolution={(id) => handleDeleteGenericEntity('/admin/solutions', id, 'Solution')}
             onDeleteIndustry={(id) => handleDeleteGenericEntity('/admin/industries', id, 'Industry')}
           />
@@ -354,6 +390,25 @@ const App: React.FC = () => {
           fields={editingEntity.fields}
           onSave={handleSaveGenericEntity}
           onClose={() => setEditingEntity(null)}
+        />
+      )}
+
+      {/* Dedicated Comprehensive Solution Modal */}
+      {editingSolution && (
+        <EditSolutionModal
+          solution={editingSolution}
+          token={auth.token || ''}
+          onSave={handleSaveSolution}
+          onClose={() => setEditingSolution(null)}
+        />
+      )}
+
+      {/* Dedicated Visual Industry Modal */}
+      {editingIndustry && (
+        <EditIndustryModal
+          initialData={editingIndustry}
+          onSave={handleSaveIndustry}
+          onClose={() => setEditingIndustry(null)}
         />
       )}
     </>
