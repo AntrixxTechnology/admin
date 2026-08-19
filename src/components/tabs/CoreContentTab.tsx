@@ -31,6 +31,13 @@ interface CoreContentTabProps {
   onRefresh: () => void;
 }
 
+const DEFAULT_ABOUT: Partial<AboutContent> = {
+  company_story: 'Antrixx Technology was established by veteran thermal and utility automation engineers dedicated to optimizing industrial energy efficiency across India. Operating extensively across process industries—including food processing, FMCG, rice & agro processing, textiles, beverages, and chemicals—our team specializes in the sales, engineering, installation, and balance-of-plant service for boilers, thermic fluid heaters, hot water generators, steam automation, and industrial water treatment facilities.',
+  mission: 'To transform industrial thermal and utility house management by delivering smart automation, precision instrumentation, and turnkey engineering solutions that minimize fuel waste, maximize efficiency, and ensure environmental compliance.',
+  vision: 'To be South Asia’s most trusted engineering partner for boiler house optimization, energy loss diagnostics, and sustainable industrial utilities.',
+  hero_image_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop',
+};
+
 export const CoreContentTab: React.FC<CoreContentTabProps> = ({
   hero,
   about,
@@ -39,7 +46,14 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
   onRefresh,
 }) => {
   const [heroForm, setHeroForm] = useState<Partial<HeroContent>>(hero || {});
-  const [aboutForm, setAboutForm] = useState<Partial<AboutContent>>(about || {});
+  const [aboutForm, setAboutForm] = useState<Partial<AboutContent>>({
+    ...DEFAULT_ABOUT,
+    ...(about || {}),
+    company_story: about?.company_story || DEFAULT_ABOUT.company_story,
+    mission: about?.mission || DEFAULT_ABOUT.mission,
+    vision: about?.vision || DEFAULT_ABOUT.vision,
+    hero_image_url: about?.hero_image_url || DEFAULT_ABOUT.hero_image_url,
+  });
   const [settingsForm, setSettingsForm] = useState<Partial<SiteSettings>>(settings || {});
 
   // Sync state whenever async data arrives from backend
@@ -48,7 +62,18 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
   }, [hero]);
 
   useEffect(() => {
-    if (about) setAboutForm(about);
+    if (about && Object.keys(about).length > 0) {
+      setAboutForm({
+        ...DEFAULT_ABOUT,
+        ...about,
+        company_story: about.company_story || DEFAULT_ABOUT.company_story,
+        mission: about.mission || DEFAULT_ABOUT.mission,
+        vision: about.vision || DEFAULT_ABOUT.vision,
+        hero_image_url: about.hero_image_url || DEFAULT_ABOUT.hero_image_url,
+      });
+    } else {
+      setAboutForm(DEFAULT_ABOUT);
+    }
   }, [about]);
 
   useEffect(() => {
