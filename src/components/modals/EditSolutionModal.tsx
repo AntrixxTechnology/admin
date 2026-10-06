@@ -12,9 +12,32 @@ import {
   Eye,
   Settings,
   ChevronRight,
+  ListOrdered,
+  List,
 } from 'lucide-react';
 import type { SolutionItem, SolutionSubProduct, SolutionScopeCard, SolutionBadge } from '../../api/client';
 import { uploadImage, getImageUrl } from '../../api/client';
+
+const STANDARD_INDUSTRIAL_OFFERINGS = [
+  'Turnkey Project Execution',
+  'System Design & Engineering',
+  'Installation & Commissioning',
+  'Spare Parts & Accessories',
+  'AMC & Annual Maintenance Contracts',
+  'Performance Optimization',
+  'Retrofit & Upgradation',
+  'Operation & Maintenance',
+  'Ducting Design & Fabrication',
+  'Pollution Monitoring Solutions',
+  'Safety Interlock & Fuel Shut-off Skid',
+  'Deaerator & Feed Tank Modernization',
+  'Draft Optimization with VFD-driven ID/FD Fans',
+  'Comprehensive Thermal Efficiency Audits',
+  'Refractory Upgrades & Insulation',
+  'PLC & HMI SCADA Integration',
+  'Energy Audit & Heat Recovery Solutions',
+  'Emission Compliance Verification',
+];
 
 interface EditSolutionModalProps {
   solution: Partial<SolutionItem>;
@@ -34,6 +57,56 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
   const [uploadingImage, setUploadingImage] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [showGuide, setShowGuide] = useState(false);
+  const [showDescPreview, setShowDescPreview] = useState(false);
+  const [customServiceInput, setCustomServiceInput] = useState('');
+
+  const handleAddService = (serviceName: string) => {
+    const trimmed = serviceName.trim();
+    if (!trimmed) return;
+    const current = formData.products_and_services || [];
+    if (!current.includes(trimmed)) {
+      setFormData({
+        ...formData,
+        products_and_services: [...current, trimmed],
+      });
+    }
+  };
+
+  const handleAddNumberedPoint = () => {
+    const current = formData.full_description || '';
+    const numbers = [...current.matchAll(/(?:^|\n)\s*(\d+)[\.\)]/g)].map((m) => parseInt(m[1], 10));
+    const nextNum = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+    const prefix = current.length > 0 && !current.endsWith('\n') ? '\n' : '';
+    setFormData({
+      ...formData,
+      full_description: `${current}${prefix}${nextNum}. `,
+    });
+  };
+
+  const handleAddBulletPoint = () => {
+    const current = formData.full_description || '';
+    const prefix = current.length > 0 && !current.endsWith('\n') ? '\n' : '';
+    setFormData({
+      ...formData,
+      full_description: `${current}${prefix}• `,
+    });
+  };
+
+  const handleAutoNumberLines = () => {
+    const current = formData.full_description || '';
+    if (!current.trim()) return;
+    const lines = current.split('\n');
+    let num = 1;
+    const converted = lines
+      .map((line) => {
+        const trimmed = line.trim();
+        if (!trimmed) return '';
+        const clean = trimmed.replace(/^(\d+[\.\)]|[•\-\*])\s*/, '');
+        return `${num++}. ${clean}`;
+      })
+      .join('\n');
+    setFormData({ ...formData, full_description: converted });
+  };
 
   // Form State with 100% prefill and smart defaults
   const [formData, setFormData] = useState<SolutionItem>({
@@ -229,7 +302,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
             <div className="space-y-6 animate-fadeIn">
               <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-200 text-blue-900 text-[11px] flex items-center gap-2">
                 <span className="font-bold uppercase tracking-wider text-[10px] bg-blue-200 text-blue-900 px-2 py-0.5 rounded">Where it appears</span>
-                <span>Ye saari fields solution page ke sabse top dark banner me render hoti hain.</span>
+                <span>These fields configure the main header banner, title, and key highlight badges on the solution page.</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -331,14 +404,59 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                 />
               </div>
 
-              {/* 3 Value Proposition Badges */}
+              {/* Hero Highlights Badges */}
               <div className="space-y-3 pt-2">
-                <label className="block font-bold text-gray-700">3 Hero Highlights Badges (Bottom of dark banner)</label>
+                <div className="flex items-center justify-between pb-1 border-b border-gray-200">
+                  <div>
+                    <label className="block font-bold text-gray-800 text-xs">
+                      Hero Highlights Badges (Dark banner bottom)
+                    </label>
+                    <p className="text-[11px] text-gray-500">
+                      Feature badges highlighting efficiency, reliability, and certifications.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.badge_highlights || [];
+                      setFormData({
+                        ...formData,
+                        badge_highlights: [
+                          ...current,
+                          {
+                            title: 'Industrial Standard',
+                            desc: 'Engineered for continuous uptime & compliance',
+                            icon_name: 'ShieldCheck',
+                          },
+                        ],
+                      });
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg bg-amberAccent hover:bg-amberAccentDark text-white font-bold text-xs flex items-center gap-1 shrink-0 shadow-sm transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Badge Highlight
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {formData.badge_highlights?.map((b, idx) => (
-                    <div key={idx} className="p-3 bg-offWhite rounded-xl border border-gray-200 space-y-2">
+                    <div key={idx} className="p-3 bg-offWhite rounded-xl border border-gray-200 space-y-2 relative group">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-[10px] text-gray-500 uppercase">Badge #{idx + 1}</span>
+                        <span className="font-bold text-[10px] text-amberAccent uppercase flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" /> Badge #{idx + 1}
+                        </span>
+                        {formData.badge_highlights && formData.badge_highlights.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = formData.badge_highlights!.filter((_, i) => i !== idx);
+                              setFormData({ ...formData, badge_highlights: updated });
+                            }}
+                            className="p-1 rounded text-red-500 hover:bg-red-50 transition-colors"
+                            title="Remove Badge"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                       <input
                         type="text"
@@ -349,7 +467,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                           updated[idx] = { ...updated[idx], title: e.target.value };
                           setFormData({ ...formData, badge_highlights: updated });
                         }}
-                        className="w-full p-1.5 font-bold rounded border border-gray-300 text-xs"
+                        className="w-full p-2 font-bold rounded-lg border border-gray-300 text-xs focus:border-amberAccent focus:outline-none"
                       />
                       <input
                         type="text"
@@ -360,7 +478,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                           updated[idx] = { ...updated[idx], desc: e.target.value };
                           setFormData({ ...formData, badge_highlights: updated });
                         }}
-                        className="w-full p-1.5 text-[11px] rounded border border-gray-300 text-gray-600"
+                        className="w-full p-2 text-[11px] rounded-lg border border-gray-300 text-gray-600 focus:border-amberAccent focus:outline-none"
                       />
                     </div>
                   ))}
@@ -396,15 +514,95 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                 </button>
               </div>
 
-              <div>
-                <label className="block font-bold text-gray-700 mb-1">Full Scope Overview Paragraph</label>
+              <div className="p-4 bg-gray-50/70 border border-gray-200 rounded-xl space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <label className="block font-bold text-gray-800 text-xs">
+                      What We Cover Overview & Bullet Highlights
+                    </label>
+                    <p className="text-[11px] text-gray-500">
+                      Supports plain text, numbered lists (1. 2. 3.), or dot bullets (•). Live site formats them into modern numbered badges.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={handleAddNumberedPoint}
+                      className="px-2.5 py-1 rounded bg-amberAccent/10 hover:bg-amberAccent/20 text-[#A86400] font-bold text-[11px] flex items-center gap-1 border border-amberAccent/30 transition-colors"
+                      title="Add next numbered point automatically"
+                    >
+                      <ListOrdered className="w-3.5 h-3.5" /> + Numbered Point (1, 2, 3)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleAddBulletPoint}
+                      className="px-2.5 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-[11px] flex items-center gap-1 transition-colors"
+                      title="Add a dot bullet point"
+                    >
+                      <List className="w-3.5 h-3.5" /> + Bullet (•)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleAutoNumberLines}
+                      className="px-2 py-1 rounded bg-white hover:bg-gray-100 text-gray-700 font-semibold text-[10px] border border-gray-300 transition-colors"
+                      title="Convert all current lines into 1. 2. 3. numbers"
+                    >
+                      Auto-Number Lines
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowDescPreview(!showDescPreview)}
+                      className={`px-2 py-1 rounded text-[10px] font-bold flex items-center gap-1 border transition-colors ${
+                        showDescPreview
+                          ? 'bg-amberAccent text-white border-amberAccent'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+                      }`}
+                    >
+                      <Eye className="w-3 h-3" /> {showDescPreview ? 'Hide Preview' : 'Preview Live'}
+                    </button>
+                  </div>
+                </div>
+
                 <textarea
-                  rows={3}
+                  rows={4}
                   value={formData.full_description}
                   onChange={(e) => setFormData({ ...formData, full_description: e.target.value })}
-                  placeholder="e.g. We design, engineer and deliver advanced air pollution control systems that ensure cleaner air..."
-                  className="w-full p-2.5 rounded-lg border border-gray-300 focus:border-amberAccent focus:outline-none"
+                  placeholder="e.g.&#10;1. Continuous particulate emission control with high reliability&#10;2. Automated pulse jet cleaning without process stoppage&#10;3. Turnkey industrial ducting and fan balance"
+                  className="w-full p-3 rounded-lg border border-gray-300 focus:border-amberAccent focus:ring-1 focus:ring-amberAccent focus:outline-none font-mono text-xs leading-relaxed bg-white"
                 />
+
+                {showDescPreview && (
+                  <div className="p-3 bg-white border border-amberAccent/30 rounded-lg shadow-sm space-y-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amberAccent flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> Live Frontend Preview
+                    </span>
+                    <div className="space-y-2 text-xs">
+                      {formData.full_description?.split('\n').filter(Boolean).map((line, lIdx) => {
+                        const numMatch = line.match(/^(\d+)[\.\)]\s*(.*)/);
+                        if (numMatch) {
+                          return (
+                            <div key={lIdx} className="flex items-start gap-2 text-gray-700">
+                              <span className="w-4 h-4 rounded-full bg-amberAccent/20 text-[#A86400] font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5 border border-amberAccent/40">
+                                {numMatch[1]}
+                              </span>
+                              <span>{numMatch[2]}</span>
+                            </div>
+                          );
+                        }
+                        const bulletMatch = line.match(/^[•\-\*]\s*(.*)/);
+                        if (bulletMatch) {
+                          return (
+                            <div key={lIdx} className="flex items-start gap-2 text-gray-700">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amberAccent shrink-0 mt-1.5" />
+                              <span>{bulletMatch[1]}</span>
+                            </div>
+                          );
+                        }
+                        return <p key={lIdx} className="text-gray-600">{line}</p>;
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -492,56 +690,141 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
           {/* ========================================================================= */}
           {activeTab === 'services' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-200">
-                <div>
-                  <h4 className="font-display font-extrabold text-sm text-inkBlack">Products & Services Checklist</h4>
-                  <p className="text-gray-500 text-[11px]">List all deliverables and service offerings for this solution.</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFormData({
-                      ...formData,
-                      products_and_services: [
-                        ...(formData.products_and_services || []),
-                        'New Offering / Service Scope',
-                      ],
-                    });
-                  }}
-                  className="px-3.5 py-1.5 rounded-lg bg-amberAccent hover:bg-amberAccentDark text-white font-bold text-xs flex items-center gap-1.5 shrink-0 shadow-sm transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Add Checklist Item
-                </button>
+              <div className="pb-3 border-b border-gray-200">
+                <h4 className="font-display font-extrabold text-sm text-inkBlack">Products & Services Checklist</h4>
+                <p className="text-gray-500 text-[11px]">Manage deliverables and service offerings displayed on the solution page.</p>
               </div>
 
-              <div className="space-y-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {formData.products_and_services?.map((service, idx) => (
-                    <div key={idx} className="flex items-center gap-2 p-2 bg-offWhite rounded-lg border border-gray-200">
-                      <CheckCircle2 className="w-4 h-4 text-amberAccent shrink-0" />
-                      <input
-                        type="text"
-                        value={service}
-                        onChange={(e) => {
-                          const updated = [...formData.products_and_services!];
-                          updated[idx] = e.target.value;
-                          setFormData({ ...formData, products_and_services: updated });
-                        }}
-                        className="flex-1 p-1 bg-transparent text-xs font-semibold focus:outline-none border-b border-gray-300 focus:border-amberAccent"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const updated = formData.products_and_services!.filter((_, i) => i !== idx);
-                          setFormData({ ...formData, products_and_services: updated });
-                        }}
-                        className="p-1 text-red-500 hover:bg-red-50 rounded"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
+              {/* Quick Add Section: Dropdown + Custom Input */}
+              <div className="p-4 bg-gray-50/80 rounded-xl border border-gray-200 space-y-3">
+                <span className="text-[10px] font-bold text-gray-700 uppercase tracking-wider block">
+                  Add Deliverables & Scope
+                </span>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5">
+                  {/* Standard Offerings Dropdown */}
+                  <div className="md:col-span-6">
+                    <select
+                      defaultValue=""
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          handleAddService(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="w-full p-2.5 bg-white rounded-lg border border-gray-300 text-xs font-semibold text-gray-700 focus:border-amberAccent focus:outline-none cursor-pointer"
+                    >
+                      <option value="" disabled>
+                        + Select from Standard Process Offerings...
+                      </option>
+                      {STANDARD_INDUSTRIAL_OFFERINGS.filter(
+                        (opt) => !(formData.products_and_services || []).includes(opt)
+                      ).map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Custom Service Input + Button */}
+                  <div className="md:col-span-6 flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Or type custom service name..."
+                      value={customServiceInput}
+                      onChange={(e) => setCustomServiceInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          if (customServiceInput.trim()) {
+                            handleAddService(customServiceInput);
+                            setCustomServiceInput('');
+                          }
+                        }
+                      }}
+                      className="flex-1 p-2 bg-white rounded-lg border border-gray-300 text-xs focus:border-amberAccent focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (customServiceInput.trim()) {
+                          handleAddService(customServiceInput);
+                          setCustomServiceInput('');
+                        }
+                      }}
+                      className="px-3 py-2 rounded-lg bg-amberAccent hover:bg-amberAccentDark text-white font-bold text-xs shrink-0 flex items-center gap-1 transition-colors"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> Add
+                    </button>
+                  </div>
                 </div>
+
+                {/* Quick Add Chips (First 6 unselected standard offerings) */}
+                <div className="pt-1 flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[10px] text-gray-400 font-semibold mr-1">Suggestions:</span>
+                  {STANDARD_INDUSTRIAL_OFFERINGS.filter(
+                    (opt) => !(formData.products_and_services || []).includes(opt)
+                  )
+                    .slice(0, 5)
+                    .map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => handleAddService(opt)}
+                        className="px-2 py-0.5 rounded-full bg-white hover:bg-amberAccent/10 hover:text-amberAccent border border-gray-200 text-gray-600 text-[10px] font-semibold transition-colors"
+                      >
+                        + {opt}
+                      </button>
+                    ))}
+                </div>
+              </div>
+
+              {/* Active Checklist Grid */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-700">
+                    Active Deliverables ({formData.products_and_services?.length || 0})
+                  </span>
+                  <span className="text-[11px] text-gray-400">
+                    Click text to edit inline or 🗑 to delete
+                  </span>
+                </div>
+
+                {formData.products_and_services && formData.products_and_services.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {formData.products_and_services.map((service, idx) => (
+                      <div key={idx} className="flex items-center gap-2 p-2 bg-offWhite rounded-lg border border-gray-200 group">
+                        <CheckCircle2 className="w-4 h-4 text-amberAccent shrink-0" />
+                        <input
+                          type="text"
+                          value={service}
+                          onChange={(e) => {
+                            const updated = [...formData.products_and_services!];
+                            updated[idx] = e.target.value;
+                            setFormData({ ...formData, products_and_services: updated });
+                          }}
+                          className="flex-1 p-1 bg-transparent text-xs font-semibold focus:outline-none border-b border-gray-300 focus:border-amberAccent"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = formData.products_and_services!.filter((_, i) => i !== idx);
+                            setFormData({ ...formData, products_and_services: updated });
+                          }}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded"
+                          title="Remove deliverable"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300 text-xs text-gray-400">
+                    No deliverables added yet. Use the dropdown above or type a custom service to add items.
+                  </div>
+                )}
               </div>
             </div>
           )}

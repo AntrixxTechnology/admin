@@ -197,7 +197,16 @@ export const SolutionsTab: React.FC<SolutionsTabProps> = ({
 
                   <td className="p-4 text-center">
                     <span className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 font-bold text-[11px]">
-                      {sol.sub_products?.length || 1} Equipment
+                      {(() => {
+                        if (Array.isArray(sol.sub_products)) return sol.sub_products.length;
+                        if (typeof sol.sub_products === 'string') {
+                          try {
+                            const parsed = JSON.parse(sol.sub_products);
+                            if (Array.isArray(parsed)) return parsed.length;
+                          } catch { /* ignore */ }
+                        }
+                        return 1;
+                      })()} Equipment
                     </span>
                   </td>
 
