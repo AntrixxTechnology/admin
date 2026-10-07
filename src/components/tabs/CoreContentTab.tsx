@@ -85,7 +85,7 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleImageUpload = async (file: File, target: 'hero_1' | 'hero_2' | 'hero_3' | 'about_hero') => {
+  const handleImageUpload = async (file: File, target: 'hero_1' | 'hero_2' | 'hero_3' | 'about_hero' | 'solutions_hero') => {
     try {
       setUploadingTarget(target);
       setError('');
@@ -96,6 +96,7 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
       else if (target === 'hero_2') setHeroForm(prev => ({ ...prev, hero_image_2: fullUrl }));
       else if (target === 'hero_3') setHeroForm(prev => ({ ...prev, hero_image_3: fullUrl }));
       else if (target === 'about_hero') setAboutForm(prev => ({ ...prev, hero_image_url: fullUrl }));
+      else if (target === 'solutions_hero') setSettingsForm(prev => ({ ...prev, solutions_hero_image_url: fullUrl }));
     } catch (err: any) {
       setError(err.message || 'Image upload failed');
     } finally {
@@ -597,6 +598,122 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 className="w-full p-2 rounded bg-white/10 text-white font-bold border border-white/20 focus:outline-none focus:border-amberAccent"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 4. SOLUTIONS HUB PAGE HERO & ARTWORK SETTINGS */}
+      {/* ========================================================================= */}
+      <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="p-5 border-b border-gray-200 bg-[#FAFAFC] flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-bold text-amberAccent uppercase tracking-widest block font-display">
+              SOLUTIONS PAGE CUSTOMIZATION
+            </span>
+            <h3 className="font-display text-base font-extrabold text-[#111]">
+              Solutions Hub Hero Headline, Description & Graphic Artwork
+            </h3>
+          </div>
+          <button
+            onClick={handleSaveSettings}
+            disabled={saving}
+            className="px-5 py-2 rounded-xl bg-amberAccent hover:bg-amberAccentDark text-white font-display font-bold text-xs uppercase tracking-wider shadow-amberGlow flex items-center gap-2 transition-all disabled:opacity-50"
+          >
+            <Save className="w-4 h-4" /> Save Solutions Hero
+          </button>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            
+            {/* Left Inputs */}
+            <div className="md:col-span-7 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  Solutions Page Headline *
+                </label>
+                <input
+                  type="text"
+                  value={settingsForm.solutions_hero_title || ''}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, solutions_hero_title: e.target.value })}
+                  placeholder="Integrated Industrial Solutions for a Smarter Future."
+                  className="w-full p-2.5 rounded-lg border border-gray-300 text-xs font-bold focus:border-amberAccent focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  Solutions Page Subtitle / Summary *
+                </label>
+                <textarea
+                  rows={3}
+                  value={settingsForm.solutions_hero_description || ''}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, solutions_hero_description: e.target.value })}
+                  placeholder="We provide advanced automation, energy optimization, environmental compliance..."
+                  className="w-full p-2.5 rounded-lg border border-gray-300 text-xs leading-relaxed focus:border-amberAccent focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  Graphic Floating Badge Text
+                </label>
+                <input
+                  type="text"
+                  value={settingsForm.solutions_hero_badge || ''}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, solutions_hero_badge: e.target.value })}
+                  placeholder="Engineering the next level | Efficiency • Reliability • Sustainability"
+                  className="w-full p-2.5 rounded-lg border border-gray-300 text-xs focus:border-amberAccent focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Right Photo Upload & Preview */}
+            <div className="md:col-span-5 space-y-3">
+              <label className="block text-xs font-bold text-gray-700">
+                Hero Engineering Artwork / Industrial Photo
+              </label>
+              
+              <div className="h-44 w-full rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 bg-gray-50 relative flex items-center justify-center">
+                {settingsForm.solutions_hero_image_url ? (
+                  <img
+                    src={getImageUrl(settingsForm.solutions_hero_image_url)}
+                    alt="Solutions Hero Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-center p-4 text-gray-400 text-xs space-y-1">
+                    <ImageIcon className="w-8 h-8 mx-auto text-gray-300" />
+                    <p>No custom photo uploaded.</p>
+                    <p className="text-[10px]">Default vector diagram will be shown.</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'solutions_hero')}
+                  disabled={uploadingTarget === 'solutions_hero'}
+                  className="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-amberAccent/10 file:text-amberAccent cursor-pointer"
+                />
+                {settingsForm.solutions_hero_image_url && (
+                  <button
+                    type="button"
+                    onClick={() => setSettingsForm({ ...settingsForm, solutions_hero_image_url: '' })}
+                    className="text-[11px] text-red-500 hover:underline shrink-0"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+              {uploadingTarget === 'solutions_hero' && (
+                <span className="text-amberAccent font-bold text-xs block">Uploading hero image...</span>
+              )}
+            </div>
+
           </div>
         </div>
       </section>
