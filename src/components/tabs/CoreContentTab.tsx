@@ -629,17 +629,44 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
             
             {/* Left Inputs */}
             <div className="md:col-span-7 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
-                  Solutions Page Headline *
-                </label>
-                <input
-                  type="text"
-                  value={settingsForm.solutions_hero_title || ''}
-                  onChange={(e) => setSettingsForm({ ...settingsForm, solutions_hero_title: e.target.value })}
-                  placeholder="Integrated Industrial Solutions for a Smarter Future."
-                  className="w-full p-2.5 rounded-lg border border-gray-300 text-xs font-bold focus:border-amberAccent focus:outline-none"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Main Headline (Dark Text) *
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsForm.solutions_hero_title || ''}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, solutions_hero_title: e.target.value })}
+                    placeholder="Integrated Industrial Solutions for a"
+                    className="w-full p-2.5 rounded-lg border border-gray-300 text-xs font-bold focus:border-amberAccent focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-amber-700 mb-1">
+                    Highlight Accent Text (Amber / Orange) *
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsForm.solutions_hero_accent || ''}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, solutions_hero_accent: e.target.value })}
+                    placeholder="Smarter Future."
+                    className="w-full p-2.5 rounded-lg border border-amber-300 text-xs font-bold text-amber-800 bg-amber-50/50 focus:border-amberAccent focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Live Preview of Headline */}
+              <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">
+                  Live Headline Preview on Website:
+                </span>
+                <p className="text-sm sm:text-base font-black text-[#111923] tracking-tight leading-snug">
+                  {settingsForm.solutions_hero_title || 'Integrated Industrial Solutions for a'}{' '}
+                  <span className="text-amberAccent">
+                    {settingsForm.solutions_hero_accent || 'Smarter Future.'}
+                  </span>
+                </p>
               </div>
 
               <div>

@@ -85,6 +85,7 @@ export interface SiteSettings {
   linkedin_url?: string;
   brochure_pdf_url?: string;
   solutions_hero_title?: string;
+  solutions_hero_accent?: string;
   solutions_hero_description?: string;
   solutions_hero_image_url?: string;
   solutions_hero_badge?: string;
