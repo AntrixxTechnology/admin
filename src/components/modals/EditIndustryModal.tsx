@@ -49,6 +49,7 @@ export const EditIndustryModal: React.FC<EditIndustryModalProps> = ({
   });
 
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -67,8 +68,11 @@ export const EditIndustryModal: React.FC<EditIndustryModalProps> = ({
   const handleImageUpload = async (file: File) => {
     try {
       setUploading(true);
+      setUploadProgress(0);
       setError('');
-      const uploadedUrl = await uploadImage(file, 'industries');
+      const uploadedUrl = await uploadImage(file, 'industries', (percent) => {
+        setUploadProgress(percent);
+      });
       const finalUrl = getImageUrl(uploadedUrl);
       setFormData((prev) => ({ ...prev, image_url: finalUrl }));
     } catch (err: any) {
@@ -154,9 +158,22 @@ export const EditIndustryModal: React.FC<EditIndustryModalProps> = ({
                 accept="image/*"
                 onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
                 disabled={uploading}
-                className="text-xs text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amberAccent/10 file:text-amberAccent hover:file:bg-amberAccent/20"
+                className="text-xs text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amberAccent/10 file:text-amberAccent hover:file:bg-amberAccent/20 cursor-pointer"
               />
-              {uploading && <span className="text-amberAccent font-bold text-[11px] block mt-1">Uploading photo...</span>}
+              {uploading && (
+                <div className="space-y-1 mt-2 max-w-sm">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-amberAccent">
+                    <span>Uploading industry cover...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

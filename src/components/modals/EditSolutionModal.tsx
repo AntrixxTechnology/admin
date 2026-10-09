@@ -55,6 +55,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
   const [activeTab, setActiveTab] = useState<'hero' | 'scope' | 'services' | 'equipment'>('hero');
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [error, setError] = useState('');
   const [showGuide, setShowGuide] = useState(false);
   const [showDescPreview, setShowDescPreview] = useState(false);
@@ -179,10 +180,14 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
 
   // Handle uploading hero image or subproduct image
   const handleUploadImage = async (file: File, target: 'hero' | { subIndex: number }) => {
+    const key = target === 'hero' ? 'hero' : `sub-${(target as any).subIndex}`;
     try {
-      setUploadingImage(target === 'hero' ? 'hero' : `sub-${(target as any).subIndex}`);
+      setUploadingImage(key);
+      setUploadProgress((prev) => ({ ...prev, [key]: 0 }));
       setError('');
-      const uploadedUrl = await uploadImage(file, 'solutions');
+      const uploadedUrl = await uploadImage(file, 'solutions', (percent) => {
+        setUploadProgress((prev) => ({ ...prev, [key]: percent }));
+      });
       const finalUrl = getImageUrl(uploadedUrl);
 
       if (target === 'hero') {
@@ -388,7 +393,20 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                       disabled={uploadingImage === 'hero'}
                       className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amberAccent/10 file:text-amberAccent hover:file:bg-amberAccent/20"
                     />
-                    {uploadingImage === 'hero' && <span className="text-amberAccent font-bold text-[11px]">Uploading image...</span>}
+                    {uploadingImage === 'hero' && (
+                      <div className="space-y-1 pt-1">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-amberAccent">
+                          <span>Uploading cover photo...</span>
+                          <span>{uploadProgress['hero'] || 0}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                          <div 
+                            className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                            style={{ width: `${uploadProgress['hero'] || 0}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -906,7 +924,20 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                           disabled={uploadingImage === `sub-${pIdx}`}
                           className="w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-amberAccent/10 file:text-amberAccent"
                         />
-                        {uploadingImage === `sub-${pIdx}` && <span className="text-amberAccent font-bold text-[10px]">Uploading photo...</span>}
+                        {uploadingImage === `sub-${pIdx}` && (
+                          <div className="space-y-1 pt-0.5">
+                            <div className="flex items-center justify-between text-[10px] font-bold text-amberAccent">
+                              <span>Uploading equipment photo...</span>
+                              <span>{uploadProgress[`sub-${pIdx}`] || 0}%</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                              <div 
+                                className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                                style={{ width: `${uploadProgress[`sub-${pIdx}`] || 0}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Product Details */}

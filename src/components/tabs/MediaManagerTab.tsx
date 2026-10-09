@@ -17,11 +17,15 @@ export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'home' | 'solutions' | 'industries' | 'portfolio' | 'logos'>('home');
   const [uploading, setUploading] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
 
   const handleImageUpload = async (key: string, file: File, entityType: string, id: string) => {
     try {
       setUploading(key);
-      const url = await uploadImage(file, 'general');
+      setUploadProgress(prev => ({ ...prev, [key]: 0 }));
+      const url = await uploadImage(file, 'general', (percent) => {
+        setUploadProgress(prev => ({ ...prev, [key]: percent }));
+      });
       
       const token = localStorage.getItem('antrixx_admin_token') || '';
       const { updateAdminSingleton, saveAdminEntity, updateSolution } = await import('../../api/client');
@@ -61,7 +65,17 @@ export const MediaManagerTab: React.FC<MediaManagerTabProps> = ({
       <div className="border border-gray200 rounded-xl p-4 flex flex-col gap-3 bg-white shadow-sm hover:border-amberAccent transition-colors">
         <div className="flex justify-between items-center">
           <span className="font-bold text-inkBlack truncate">{label}</span>
-          {uploading === key ? <span className="text-xs text-amberAccent shrink-0">Uploading...</span> : null}
+          {uploading === key ? (
+            <div className="flex items-center gap-2">
+              <div className="w-14 bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                <div 
+                  className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                  style={{ width: `${uploadProgress[key] || 0}%` }}
+                />
+              </div>
+              <span className="text-xs font-bold text-amberAccent shrink-0">{uploadProgress[key] || 0}%</span>
+            </div>
+          ) : null}
         </div>
         <div className="relative group bg-offWhite rounded-lg aspect-video flex items-center justify-center overflow-hidden border border-dashed border-gray300">
           {currentUrl ? (

@@ -375,37 +375,61 @@ export async function deleteAdminEntity(endpoint: string, token: string, id: str
   return res.ok;
 }
 
-export const uploadImage = async (file: File, bucket = 'general'): Promise<string> => {
-  const token = localStorage.getItem('antrixx_admin_token');
-  if (!token) throw new Error('Not authenticated');
+export const uploadImage = (
+  file: File,
+  bucket = 'general',
+  onProgress?: (percent: number) => void
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem('antrixx_admin_token');
+    if (!token) return reject(new Error('Not authenticated'));
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('bucket', bucket);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('bucket', bucket);
 
-  const uploadEndpoint = API_BASE.endsWith('/admin')
-    ? `${API_BASE}/upload`
-    : `${API_BASE}/admin/upload`;
+    const uploadEndpoint = API_BASE.endsWith('/admin')
+      ? `${API_BASE}/upload`
+      : `${API_BASE}/admin/upload`;
 
-  const res = await fetch(uploadEndpoint, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  });
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', uploadEndpoint);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
-  if (!res.ok) {
-    let errorMessage = res.statusText;
-    try {
-      const errJson = await res.json();
-      if (errJson && errJson.error) {
-        errorMessage = errJson.error;
+    if (xhr.upload && onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percent = Math.min(100, Math.max(0, Math.round((event.loaded / event.total) * 100)));
+          onProgress(percent);
+        }
+      };
+    }
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (onProgress) onProgress(100);
+          resolve(data.url);
+        } catch (e) {
+          reject(new Error('Invalid response from server'));
+        }
+      } else {
+        let errorMessage = xhr.statusText;
+        try {
+          const errJson = JSON.parse(xhr.responseText);
+          if (errJson && errJson.error) {
+            errorMessage = errJson.error;
+          }
+        } catch (_) {}
+        reject(new Error(errorMessage || `HTTP ${xhr.status}`));
       }
-    } catch (_) {}
-    throw new Error(errorMessage || `HTTP ${res.status}`);
-  }
+    };
 
-  const data = await res.json();
-  return data.url;
+    xhr.onerror = () => {
+      reject(new Error('Network error during file upload'));
+    };
+
+    xhr.send(formData);
+  });
 };

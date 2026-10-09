@@ -22,14 +22,18 @@ export const GenericEditModal: React.FC<GenericEditModalProps> = ({
   const [formData, setFormData] = useState<any>(initialData || {});
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [error, setError] = useState('');
 
   const handleImageUpload = async (key: string, file: File) => {
     try {
       setUploading(prev => ({ ...prev, [key]: true }));
+      setUploadProgress(prev => ({ ...prev, [key]: 0 }));
       setError('');
       const { uploadImage, getImageUrl } = await import('../../api/client');
-      const url = await uploadImage(file, 'general');
+      const url = await uploadImage(file, 'general', (percent) => {
+        setUploadProgress(prev => ({ ...prev, [key]: percent }));
+      });
       handleChange(key, getImageUrl(url));
     } catch (err: any) {
       setError(err.message || 'Image upload failed');
@@ -121,7 +125,20 @@ export const GenericEditModal: React.FC<GenericEditModalProps> = ({
                     disabled={uploading[f.key]}
                     className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-amberAccent/10 file:text-amberAccent hover:file:bg-amberAccent/20 disabled:opacity-50"
                   />
-                  {uploading[f.key] && <span className="text-xs text-amberAccent">Uploading...</span>}
+                  {uploading[f.key] && (
+                    <div className="space-y-1 pt-1 max-w-xs">
+                      <div className="flex items-center justify-between text-xs font-bold text-amberAccent">
+                        <span>Uploading image...</span>
+                        <span>{uploadProgress[f.key] || 0}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                          style={{ width: `${uploadProgress[f.key] || 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <input 

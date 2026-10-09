@@ -82,14 +82,18 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
 
   const [saving, setSaving] = useState(false);
   const [uploadingTarget, setUploadingTarget] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const handleImageUpload = async (file: File, target: 'hero_1' | 'hero_2' | 'hero_3' | 'about_hero' | 'solutions_hero') => {
     try {
       setUploadingTarget(target);
+      setUploadProgress(prev => ({ ...prev, [target]: 0 }));
       setError('');
-      const uploadedUrl = await uploadImage(file, 'general');
+      const uploadedUrl = await uploadImage(file, 'general', (percent) => {
+        setUploadProgress(prev => ({ ...prev, [target]: percent }));
+      });
       const fullUrl = getImageUrl(uploadedUrl);
 
       if (target === 'hero_1') setHeroForm(prev => ({ ...prev, hero_image_1: fullUrl, background_image_url: fullUrl }));
@@ -244,16 +248,29 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 <label className="text-[10px] text-gray-300 font-bold uppercase tracking-wider block mb-1">
                   Replace Main Banner Image
                 </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'hero_1')}
-                    disabled={uploadingTarget === 'hero_1'}
-                    className="text-xs text-gray-300 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-amberAccent/20 file:text-amberAccent"
-                  />
-                  {uploadingTarget === 'hero_1' && <span className="text-amberAccent font-bold text-xs">Uploading...</span>}
-                </div>
+                  <div className="space-y-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'hero_1')}
+                      disabled={uploadingTarget === 'hero_1'}
+                      className="text-xs text-gray-300 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-amberAccent/20 file:text-amberAccent cursor-pointer"
+                    />
+                    {uploadingTarget === 'hero_1' && (
+                      <div className="space-y-1 max-w-xs">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-amberAccent">
+                          <span>Uploading main banner...</span>
+                          <span>{uploadProgress['hero_1'] || 0}%</span>
+                        </div>
+                        <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                            style={{ width: `${uploadProgress['hero_1'] || 0}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
               </div>
             </div>
 
@@ -297,15 +314,28 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                   </div>
                 </div>
 
-                <div className="relative z-20 pt-2 border-t border-white/10">
+                <div className="relative z-20 pt-2 border-t border-white/10 space-y-1.5">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'hero_2')}
                     disabled={uploadingTarget === 'hero_2'}
-                    className="text-xs text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-amberAccent/20 file:text-amberAccent"
+                    className="text-xs text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-amberAccent/20 file:text-amberAccent cursor-pointer"
                   />
-                  {uploadingTarget === 'hero_2' && <span className="text-amberAccent font-bold text-[10px]">Uploading...</span>}
+                  {uploadingTarget === 'hero_2' && (
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-[10px] font-bold text-amberAccent">
+                        <span>Uploading banner 2...</span>
+                        <span>{uploadProgress['hero_2'] || 0}%</span>
+                      </div>
+                      <div className="w-full bg-white/10 rounded-full h-1 overflow-hidden">
+                        <div
+                          className="bg-amberAccent h-1 rounded-full transition-all duration-150"
+                          style={{ width: `${uploadProgress['hero_2'] || 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -346,15 +376,28 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                   </div>
                 </div>
 
-                <div className="relative z-20 pt-2 border-t border-white/10">
+                <div className="relative z-20 pt-2 border-t border-white/10 space-y-1.5">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'hero_3')}
                     disabled={uploadingTarget === 'hero_3'}
-                    className="text-xs text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-amberAccent/20 file:text-amberAccent"
+                    className="text-xs text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-amberAccent/20 file:text-amberAccent cursor-pointer"
                   />
-                  {uploadingTarget === 'hero_3' && <span className="text-amberAccent font-bold text-[10px]">Uploading...</span>}
+                  {uploadingTarget === 'hero_3' && (
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-[10px] font-bold text-amberAccent">
+                        <span>Uploading banner 3...</span>
+                        <span>{uploadProgress['hero_3'] || 0}%</span>
+                      </div>
+                      <div className="w-full bg-white/10 rounded-full h-1 overflow-hidden">
+                        <div
+                          className="bg-amberAccent h-1 rounded-full transition-all duration-150"
+                          style={{ width: `${uploadProgress['hero_3'] || 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -489,16 +532,29 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
             <div className="h-16 w-24 rounded-lg overflow-hidden bg-gray-200 shrink-0">
               <img src={getImageUrl(aboutForm.hero_image_url) || "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop"} alt="About" className="w-full h-full object-cover" />
             </div>
-            <div className="flex-1 space-y-1">
+            <div className="flex-1 space-y-2">
               <label className="block text-xs font-bold text-gray-700">About Us Page Featured Team Image</label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], 'about_hero')}
                 disabled={uploadingTarget === 'about_hero'}
-                className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-bold file:bg-amberAccent/10 file:text-amberAccent"
+                className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-bold file:bg-amberAccent/10 file:text-amberAccent cursor-pointer"
               />
-              {uploadingTarget === 'about_hero' && <span className="text-amberAccent font-bold text-xs">Uploading...</span>}
+              {uploadingTarget === 'about_hero' && (
+                <div className="space-y-1 max-w-xs pt-1">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-amberAccent">
+                    <span>Uploading featured image...</span>
+                    <span>{uploadProgress['about_hero'] || 0}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                      style={{ width: `${uploadProgress['about_hero'] || 0}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -737,7 +793,18 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 )}
               </div>
               {uploadingTarget === 'solutions_hero' && (
-                <span className="text-amberAccent font-bold text-xs block">Uploading hero image...</span>
+                <div className="space-y-1 pt-1 max-w-xs">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-amberAccent">
+                    <span>Uploading artwork photo...</span>
+                    <span>{uploadProgress['solutions_hero'] || 0}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className="bg-amberAccent h-1.5 rounded-full transition-all duration-150"
+                      style={{ width: `${uploadProgress['solutions_hero'] || 0}%` }}
+                    />
+                  </div>
+                </div>
               )}
             </div>
 
