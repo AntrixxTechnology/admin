@@ -295,7 +295,7 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                     <label className="text-[10px] text-gray-300 font-bold uppercase block mb-0.5">Card Title</label>
                     <input
                       type="text"
-                      value={heroForm.card_2_title || 'SCADA Telemetry'}
+                      value={heroForm.card_2_title ?? ''}
                       onChange={(e) => setHeroForm({ ...heroForm, card_2_title: e.target.value })}
                       placeholder="SCADA Telemetry"
                       className="w-full p-2 rounded-lg bg-white/10 text-white font-bold border border-white/20 text-xs focus:outline-none focus:border-amberAccent font-display"
@@ -306,7 +306,7 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                     <label className="text-[10px] text-gray-300 font-bold uppercase block mb-0.5">Link URL</label>
                     <input
                       type="text"
-                      value={heroForm.card_2_link || '/solutions/utility-remote-monitoring'}
+                      value={heroForm.card_2_link ?? ''}
                       onChange={(e) => setHeroForm({ ...heroForm, card_2_link: e.target.value })}
                       placeholder="/solutions/utility-remote-monitoring"
                       className="w-full p-1.5 rounded-lg bg-white/10 text-amberAccent text-[11px] font-mono border border-white/20 focus:outline-none"
@@ -357,7 +357,7 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                     <label className="text-[10px] text-gray-300 font-bold uppercase block mb-0.5">Card Title</label>
                     <input
                       type="text"
-                      value={heroForm.card_3_title || 'Environment Control'}
+                      value={heroForm.card_3_title ?? ''}
                       onChange={(e) => setHeroForm({ ...heroForm, card_3_title: e.target.value })}
                       placeholder="Environment Control"
                       className="w-full p-2 rounded-lg bg-white/10 text-white font-bold border border-white/20 text-xs focus:outline-none focus:border-amberAccent font-display"
@@ -368,7 +368,7 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                     <label className="text-[10px] text-gray-300 font-bold uppercase block mb-0.5">Link URL</label>
                     <input
                       type="text"
-                      value={heroForm.card_3_link || '/solutions/pollution-control-equipment'}
+                      value={heroForm.card_3_link ?? ''}
                       onChange={(e) => setHeroForm({ ...heroForm, card_3_link: e.target.value })}
                       placeholder="/solutions/pollution-control-equipment"
                       className="w-full p-1.5 rounded-lg bg-white/10 text-amberAccent text-[11px] font-mono border border-white/20 focus:outline-none"
@@ -415,8 +415,9 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 <label className="block text-[10px] font-bold text-gray-600 mb-0.5">Plant Efficiency (%)</label>
                 <input
                   type="number"
-                  value={heroForm.scada_plant_efficiency ?? 94}
-                  onChange={(e) => setHeroForm({ ...heroForm, scada_plant_efficiency: Number(e.target.value) })}
+                  placeholder="94"
+                  value={heroForm.scada_plant_efficiency !== undefined ? heroForm.scada_plant_efficiency : ''}
+                  onChange={(e) => setHeroForm({ ...heroForm, scada_plant_efficiency: e.target.value === '' ? undefined as any : Number(e.target.value) })}
                   className="w-full p-2 rounded-lg bg-white border border-gray-300 font-bold"
                 />
               </div>
@@ -425,8 +426,9 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 <input
                   type="number"
                   step="0.1"
-                  value={heroForm.scada_steam_flow ?? 14.8}
-                  onChange={(e) => setHeroForm({ ...heroForm, scada_steam_flow: Number(e.target.value) })}
+                  placeholder="14.8"
+                  value={heroForm.scada_steam_flow !== undefined ? heroForm.scada_steam_flow : ''}
+                  onChange={(e) => setHeroForm({ ...heroForm, scada_steam_flow: e.target.value === '' ? undefined as any : Number(e.target.value) })}
                   className="w-full p-2 rounded-lg bg-white border border-gray-300 font-bold"
                 />
               </div>
@@ -434,8 +436,9 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 <label className="block text-[10px] font-bold text-gray-600 mb-0.5">Fuel Burn Rate (Kg/hr)</label>
                 <input
                   type="number"
-                  value={heroForm.scada_fuel_consumption ?? 850}
-                  onChange={(e) => setHeroForm({ ...heroForm, scada_fuel_consumption: Number(e.target.value) })}
+                  placeholder="850"
+                  value={heroForm.scada_fuel_consumption !== undefined ? heroForm.scada_fuel_consumption : ''}
+                  onChange={(e) => setHeroForm({ ...heroForm, scada_fuel_consumption: e.target.value === '' ? undefined as any : Number(e.target.value) })}
                   className="w-full p-2 rounded-lg bg-white border border-gray-300 font-bold"
                 />
               </div>
@@ -443,8 +446,9 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 <label className="block text-[10px] font-bold text-gray-600 mb-0.5">Energy Saved (MWh)</label>
                 <input
                   type="number"
-                  value={heroForm.scada_energy_saved_mwh ?? 1240}
-                  onChange={(e) => setHeroForm({ ...heroForm, scada_energy_saved_mwh: Number(e.target.value) })}
+                  placeholder="1240"
+                  value={heroForm.scada_energy_saved_mwh !== undefined ? heroForm.scada_energy_saved_mwh : ''}
+                  onChange={(e) => setHeroForm({ ...heroForm, scada_energy_saved_mwh: e.target.value === '' ? undefined as any : Number(e.target.value) })}
                   className="w-full p-2 rounded-lg bg-white border border-gray-300 font-bold"
                 />
               </div>
