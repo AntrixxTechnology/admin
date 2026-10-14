@@ -99,7 +99,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             Logged In As
           </span>
           <span className="text-xs text-inkBlack font-bold block truncate">
-            admin@antrixx.com
+            admin@antrixxtechnology.net
           </span>
         </div>
       </aside>

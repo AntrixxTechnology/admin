@@ -242,23 +242,20 @@ const App: React.FC = () => {
               <label className="block font-bold text-gray-700 mb-1">Admin Email</label>
               <div className="relative">
                 <User className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
-                <input id="admin-email" type="email" required value={auth.email} onChange={(e) => auth.setEmail(e.target.value)} className="w-full pl-9 pr-3 py-2.5 rounded-md bg-offWhite border border-gray200 text-inkBlack focus:outline-none focus:border-amberAccent" />
+                <input id="admin-email" type="email" required placeholder="admin@antrixxtechnology.net" value={auth.email} onChange={(e) => auth.setEmail(e.target.value)} className="w-full pl-9 pr-3 py-2.5 rounded-md bg-offWhite border border-gray200 text-inkBlack focus:outline-none focus:border-amberAccent" />
               </div>
             </div>
             <div>
               <label className="block font-bold text-gray-700 mb-1">Password</label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
-                <input id="admin-password" type="password" required value={auth.password} onChange={(e) => auth.setPassword(e.target.value)} className="w-full pl-9 pr-3 py-2.5 rounded-md bg-offWhite border border-gray200 text-inkBlack focus:outline-none focus:border-amberAccent" />
+                <input id="admin-password" type="password" required placeholder="••••••••••••" value={auth.password} onChange={(e) => auth.setPassword(e.target.value)} className="w-full pl-9 pr-3 py-2.5 rounded-md bg-offWhite border border-gray200 text-inkBlack focus:outline-none focus:border-amberAccent" />
               </div>
             </div>
             <button id="admin-login-btn" type="submit" disabled={auth.loginLoading} className="w-full py-3 rounded-md bg-amberAccent hover:bg-amberAccentDark text-white font-display font-bold text-xs uppercase tracking-wider shadow-amberGlow flex items-center justify-center gap-2 transition-colors disabled:opacity-50">
               {auth.loginLoading ? 'AUTHENTICATING...' : 'SIGN IN TO CMS PORTAL'} <Shield className="w-4 h-4" />
             </button>
           </form>
-          <div className="pt-2 text-center text-[10px] text-gray-400 border-t border-gray200">
-            Default credentials: <code className="text-amberAccent">admin@antrixx.com</code> / <code className="text-amberAccent">AntrixxAdmin2026!</code>
-          </div>
         </div>
       </div>
     );

@@ -17,7 +17,7 @@ export interface AdminAuthState {
 
 export function useAdminAuth(): AdminAuthState {
   const [token, setToken] = useState<string | null>(null);
-  const [email, setEmail] = useState('admin@antrixx.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
