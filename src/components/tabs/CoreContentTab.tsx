@@ -19,6 +19,9 @@ import {
   Activity,
   Gauge,
   HelpCircle,
+  Linkedin,
+  Facebook,
+  Instagram,
 } from 'lucide-react';
 import type { HeroContent, AboutContent, SiteSettings } from '../../api/client';
 import { updateAdminSingleton, uploadImage, getImageUrl } from '../../api/client';
@@ -658,6 +661,53 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
                 className="w-full p-2 rounded bg-white/10 text-white font-bold border border-white/20 focus:outline-none focus:border-amberAccent"
               />
             </div>
+
+            {/* Social Media Links for Footer */}
+            <div className="pt-4 border-t border-white/10 space-y-2">
+              <span className="text-[10px] text-amberAccent font-bold uppercase tracking-widest block font-display">
+                Social Media Links (Controlled Live in Website Footer)
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div className="space-y-1">
+                  <label className="text-[10px] text-gray-400 font-bold flex items-center gap-1">
+                    <Linkedin className="w-3 h-3 text-amberAccent" /> LinkedIn URL
+                  </label>
+                  <input
+                    type="url"
+                    value={settingsForm.linkedin_url || ''}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, linkedin_url: e.target.value })}
+                    placeholder="https://www.linkedin.com/company/antrixxtechnology"
+                    className="w-full p-2 rounded bg-white/10 text-white font-bold border border-white/20 focus:outline-none focus:border-amberAccent"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] text-gray-400 font-bold flex items-center gap-1">
+                    <Facebook className="w-3 h-3 text-amberAccent" /> Facebook URL
+                  </label>
+                  <input
+                    type="url"
+                    value={settingsForm.facebook_url || ''}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, facebook_url: e.target.value })}
+                    placeholder="https://www.facebook.com/antrixxtechnology"
+                    className="w-full p-2 rounded bg-white/10 text-white font-bold border border-white/20 focus:outline-none focus:border-amberAccent"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] text-gray-400 font-bold flex items-center gap-1">
+                    <Instagram className="w-3 h-3 text-amberAccent" /> Instagram URL
+                  </label>
+                  <input
+                    type="url"
+                    value={settingsForm.instagram_url || ''}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, instagram_url: e.target.value })}
+                    placeholder="https://www.instagram.com/antrixxtechnology"
+                    className="w-full p-2 rounded bg-white/10 text-white font-bold border border-white/20 focus:outline-none focus:border-amberAccent"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -812,6 +862,56 @@ export const CoreContentTab: React.FC<CoreContentTabProps> = ({
               )}
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 5. LEGAL & COMPLIANCE POLICIES (PRIVACY POLICY & TERMS OF SERVICE) */}
+      {/* ========================================================================= */}
+      <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="p-5 border-b border-gray-200 bg-[#FAFAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span className="text-[10px] font-bold text-amberAccent uppercase tracking-widest block font-display">
+              LEGAL & REGULATORY COMPLIANCE
+            </span>
+            <h3 className="font-display text-base font-extrabold text-[#111]">
+              Privacy Policy & Terms of Service Status
+            </h3>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href="http://localhost:5173/privacy-policy"
+              target="_blank"
+              rel="noreferrer"
+              className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-inkBlack text-xs font-bold transition-all flex items-center gap-1.5 border border-gray-200"
+            >
+              <Eye className="w-3.5 h-3.5 text-amberAccent" /> Preview Privacy Policy
+            </a>
+            <a
+              href="http://localhost:5173/terms-of-service"
+              target="_blank"
+              rel="noreferrer"
+              className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-inkBlack text-xs font-bold transition-all flex items-center gap-1.5 border border-gray-200"
+            >
+              <Eye className="w-3.5 h-3.5 text-amberAccent" /> Preview Terms of Service
+            </a>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <div className="p-4 rounded-xl bg-offWhite border border-gray-200 flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="space-y-1 text-xs text-gray-600">
+              <p className="font-bold text-inkBlack text-sm">Enterprise Standard Legal Pages Published</p>
+              <p className="leading-relaxed">
+                Both <strong>Privacy Policy</strong> (<code className="text-amberAccent bg-gray-100 px-1 py-0.5 rounded">/privacy-policy</code>) and <strong>Terms of Service</strong> (<code className="text-amberAccent bg-gray-100 px-1 py-0.5 rounded">/terms-of-service</code>) are live on the main website and wired to the footer:
+              </p>
+              <ul className="list-disc pl-5 pt-1 space-y-1 text-[11px] text-gray-600">
+                <li><strong>Privacy Policy:</strong> Covers Enterprise Data Governance, Resend Mail handling, Supabase data isolation, cookie telemetry, and Grievance Officer representation (under Indian IT Act 2000).</li>
+                <li><strong>Terms of Service:</strong> Covers 30-day Commercial Quotation validity, Boiler & Utility Pre-requisites, Engineering Warranty, and Kolkata Jurisdiction arbitration.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
