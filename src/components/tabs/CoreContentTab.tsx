@@ -35,9 +35,9 @@ interface CoreContentTabProps {
 }
 
 const DEFAULT_ABOUT: Partial<AboutContent> = {
-  company_story: 'Antrixx Technology was established by veteran thermal and utility automation engineers dedicated to optimizing industrial energy efficiency across India. Operating extensively across process industries—including food processing, FMCG, rice & agro processing, textiles, beverages, and chemicals—our team specializes in the sales, engineering, installation, and balance-of-plant service for boilers, thermic fluid heaters, hot water generators, steam automation, and industrial water treatment facilities.',
-  mission: 'To transform industrial thermal and utility house management by delivering smart automation, precision instrumentation, and turnkey engineering solutions that minimize fuel waste, maximize efficiency, and ensure environmental compliance.',
-  vision: 'To be South Asia’s most trusted engineering partner for boiler house optimization, energy loss diagnostics, and sustainable industrial utilities.',
+  company_story: 'Antrixx Technology is a Kolkata-headquartered industrial engineering and turnkey automation firm led by veteran thermal engineers. We specialize in the complete lifecycle of Boiler & Steam Systems—from custom thermal design, heavy metallurgy fabrication, and site erection to Indian Boiler Regulations (IBR) compliance and preventive Annual Maintenance Contracts (AMC). Partnering with process manufacturers across FMCG, food processing, rice mills, textiles, pharmaceuticals, and chemical manufacturing, Antrixx delivers end-to-end utility infrastructure. Beyond high-efficiency boiler houses, our multidisciplinary engineering team integrates high-capacity Chillers & Heat Pumps, specialized Air Pollution Control Equipment (ESP, Wet Scrubbers, Bag Filters), and precision PLC/SCADA Automation to eliminate fuel waste, reduce carbon emissions, and ensure 24/7 zero-unplanned-downtime operations.',
+  mission: 'To empower process industries nationwide with robust boiler systems, emission control engineering, and intelligent automation that optimize fuel economics and drive sustainable industrial growth.',
+  vision: "To be India's premier engineering destination for turnkey steam engineering, industrial utility optimization, and sustainable thermal infrastructure.",
   hero_image_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop',
 };
 

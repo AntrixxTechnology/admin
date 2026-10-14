@@ -49,8 +49,12 @@ export const ResourcesTab: React.FC<ResourcesTabProps> = ({
               ) : team.sort((a,b)=>a.sort_order - b.sort_order).map((t) => (
                 <tr key={t.id} className="hover:bg-offWhite/50 transition-colors">
                   <td className="p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-offWhite border border-gray200 overflow-hidden">
-                      {t.image_url ? <img src={t.image_url} alt={t.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center font-bold text-gray-400">{t.name.charAt(0)}</div>}
+                    <div className="w-10 h-10 rounded-full bg-offWhite border border-gray200 overflow-hidden flex items-center justify-center p-1">
+                      {t.image_url ? (
+                        <img src={t.image_url} alt={t.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <img src="/logo.png" alt="Antrixx Logo" className="w-full h-full object-contain" />
+                      )}
                     </div>
                     <div>
                       <div className="font-bold text-inkBlack">{t.name}</div>
