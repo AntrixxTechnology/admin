@@ -247,14 +247,34 @@ const isLocal = typeof window !== 'undefined' &&
 
 export const API_BASE = isLocal 
   ? 'http://localhost:5000/api' 
-  : (import.meta.env.VITE_API_URL || 'https://antrixx-backend.vercel.app/api');
+  : (import.meta.env.VITE_API_URL || 'https://api.antrixxtechnology.net/api');
 
 export const HOST_BASE = API_BASE.replace(/\/api(\/admin)?$/, '');
 
 export const getImageUrl = (url?: string) => {
   if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+  // Intercept any Supabase Storage Public URLs to completely hide origin
+  const supabaseRegex = /https:\/\/[a-z0-9]+\.supabase\.co\/storage\/v1\/object\/public\/([^/]+)\/(.+)$/i;
+  const match = url.match(supabaseRegex);
+  if (match) {
+    const bucket = match[1];
+    const fileName = match[2];
+    return `${HOST_BASE}/api/media/${bucket}/${fileName}`;
+  }
+
+  // Intercept internal media proxy paths
+  if (url.startsWith('/api/media/') || url.startsWith('/media/')) {
+    const cleanPath = url.startsWith('/api/') ? url : `/api${url}`;
+    return `${HOST_BASE}${cleanPath}`;
+  }
+
+  // Intercept legacy local uploads
   if (url.startsWith('/uploads/')) return `${HOST_BASE}${url}`;
+
+  // External public links (Unsplash, CDNs)
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
   return url;
 };
 

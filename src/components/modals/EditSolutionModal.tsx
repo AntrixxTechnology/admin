@@ -159,7 +159,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
           {
             id: 'sub-1',
             name: initialData.title || 'Core Equipment System',
-            image_url: initialData.hero_image_url || 'https://cjaeubdycgnwgfkbddvb.supabase.co/storage/v1/object/public/general/boiler_retrofit_thermic_heater_industrial.jpg',
+            image_url: initialData.hero_image_url || '/api/media/general/boiler_retrofit_thermic_heater_industrial.jpg',
             description: initialData.short_description || '',
             technical_specs: initialData.technical_specs && Object.keys(initialData.technical_specs).length > 0
               ? initialData.technical_specs
@@ -867,7 +867,7 @@ export const EditSolutionModal: React.FC<EditSolutionModalProps> = ({
                         {
                           id: `prod-${Date.now()}`,
                           name: 'Industrial Equipment Unit',
-                          image_url: 'https://cjaeubdycgnwgfkbddvb.supabase.co/storage/v1/object/public/general/cyclone_dust_collector_industrial.jpg',
+                          image_url: '/api/media/general/cyclone_dust_collector_industrial.jpg',
                           description: 'High performance industrial equipment description...',
                           technical_specs: {
                             'Application': 'Cement, Power, Steel & Manufacturing',
